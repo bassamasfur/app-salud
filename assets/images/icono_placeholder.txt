@@ -1,0 +1,9 @@
+# Este archivo es un marcador de posición para el ícono de la aplicación
+# En un proyecto real, aquí iría un archivo PNG de 512x512 píxeles
+# Para propósitos de desarrollo, la aplicación usará el ícono por defecto de Flutter
+
+# Para agregar un ícono personalizado:
+# 1. Crear un archivo icono.png de 512x512 píxeles
+# 2. Colocarlo en esta carpeta (assets/images/)
+# 3. Configurar pubspec.yaml para incluir los assets
+# 4. Opcional: usar flutter_launcher_icons para generar todos los tamaños necesarios

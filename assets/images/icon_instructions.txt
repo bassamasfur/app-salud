@@ -1,0 +1,22 @@
+# Script para crear un ícono PNG para la aplicación IMC
+# Este archivo documenta cómo crear el ícono de la aplicación
+
+# Para crear el ícono PNG de 512x512 píxeles:
+# 1. Usar el archivo app_icon.svg como base
+# 2. Convertir a PNG usando una herramienta como Inkscape o un convertidor online
+# 3. Asegurar que el tamaño sea exactamente 512x512 píxeles
+# 4. Guardar como app_icon.png en esta carpeta
+
+# Alternativamente, usar una herramienta como GIMP o Photoshop para crear:
+# - Fondo azul (#2E86AB) con esquinas redondeadas
+# - Ícono de balanza o peso en blanco
+# - Texto "IMC" prominente
+# - Dimensiones: 512x512 píxeles
+# - Formato: PNG con transparencia si es necesario
+
+# Una vez creado el PNG, ejecutar:
+# flutter pub get
+# flutter pub run flutter_launcher_icons:main
+
+# Comando temporal para crear un ícono básico (requiere ImageMagick):
+# convert -size 512x512 xc:"#2E86AB" -fill white -gravity center -pointsize 120 -annotate +0-50 "IMC" -pointsize 40 -annotate +0+50 "Calculator" app_icon.png
