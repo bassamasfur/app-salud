@@ -105,6 +105,57 @@ class ResultadoPage extends StatelessWidget {
 
                               SizedBox(height: isSmallScreen ? 12 : 16),
 
+                              // Interpretación solo si la categoría es normal, sobrepeso, bajo peso u obesidad
+                              if ([
+                                "bajo peso",
+                                "normal",
+                                "sobrepeso",
+                                "obesidad",
+                              ].contains(
+                                persona.obtenerCategoriaIMC().toLowerCase(),
+                              ))
+                                Container(
+                                  width: double.infinity,
+                                  margin: EdgeInsets.only(
+                                    bottom: isSmallScreen ? 12 : 16,
+                                  ),
+                                  padding: EdgeInsets.all(
+                                    isSmallScreen ? 14 : 18,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[50],
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(
+                                      color: Colors.blue[200]!,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'INTERPRETACIÓN',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue[800],
+                                          fontSize: isSmallScreen ? 14 : 15,
+                                        ),
+                                      ),
+                                      SizedBox(height: isSmallScreen ? 6 : 8),
+                                      Text(
+                                        _getDescripcionCategoria(
+                                          persona.obtenerCategoriaIMC(),
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: isSmallScreen ? 13 : 14,
+                                          color: Colors.grey[700],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
                               // Recomendaciones
                               _buildRecomendaciones(persona, isSmallScreen),
                             ],
@@ -531,7 +582,7 @@ class ResultadoPage extends StatelessWidget {
       case 'obesidad':
         return 'Tu peso está significativamente por encima del rango saludable. Es importante buscar ayuda profesional.';
       default:
-        return 'Resultado no disponible.';
+        return 'Consulta con un profesional de la salud para más información.';
     }
   }
 

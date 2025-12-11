@@ -60,13 +60,13 @@ class Persona {
     double imc = calcularIMC();
 
     if (imc < 18.5) {
-      return 'Bajo peso';
+      return 'bajo peso';
     } else if (imc >= 18.5 && imc < 25) {
-      return 'Peso normal';
+      return 'normal';
     } else if (imc >= 25 && imc < 30) {
-      return 'Sobrepeso';
+      return 'sobrepeso';
     } else {
-      return 'Obesidad';
+      return 'obesidad';
     }
   }
 
