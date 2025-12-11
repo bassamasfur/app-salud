@@ -1,4 +1,4 @@
-package com.example.app_imc
+package com.bassamasfur.appsalud
 
 import io.flutter.embedding.android.FlutterActivity
 
