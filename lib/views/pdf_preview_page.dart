@@ -145,85 +145,24 @@ class PDFPreviewPage extends StatelessWidget {
 
   /// Descarga el PDF después de la vista previa
   Future<void> _descargarPDF(BuildContext context) async {
-    // Mostrar indicador de carga
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const AlertDialog(
-          content: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(width: 20),
-              Text('Descargando informe PDF...'),
-            ],
-          ),
-        );
-      },
-    );
-
     try {
-      // Generar y guardar el PDF
-      final bool success = await PDFService.generarInformePDF(persona);
+      // Generar el PDF como bytes
+      final pdfDoc = await PDFService.generarPDFParaVistaPrevia(persona);
+      final pdfBytes = await pdfDoc.save();
 
-      // Cerrar el diálogo de carga
-      if (context.mounted) {
-        Navigator.of(context).pop();
-      }
-
-      // Mostrar resultado y cerrar vista previa
-      if (context.mounted) {
-        if (success) {
-          // Cerrar la vista previa
-          Navigator.of(context).pop();
-
-          // Mostrar mensaje de éxito
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Row(
-                children: [
-                  Icon(Icons.check_circle, color: Colors.white),
-                  SizedBox(width: 10),
-                  Text('¡Informe PDF descargado correctamente!'),
-                ],
-              ),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 4),
-              action: SnackBarAction(
-                label: 'OK',
-                textColor: Colors.white,
-                onPressed: () {},
-              ),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Row(
-                children: [
-                  Icon(Icons.error, color: Colors.white),
-                  SizedBox(width: 10),
-                  Text('Error al descargar el PDF'),
-                ],
-              ),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 4),
-            ),
-          );
-        }
-      }
+      // Usar Printing.sharePdf para que el usuario elija dónde guardar o compartir
+      await Printing.sharePdf(
+        bytes: pdfBytes,
+        filename:
+            'Informe_IMC_${persona.nombre}_${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}.pdf',
+      );
     } catch (e) {
-      // Cerrar el diálogo de carga en caso de error
-      if (context.mounted) {
-        Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error inesperado: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al descargar el PDF: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 }
