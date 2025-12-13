@@ -25,9 +25,9 @@ class PDFPreviewPage extends StatelessWidget {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.download),
+            icon: const Icon(Icons.send),
             onPressed: () => _descargarPDF(context),
-            tooltip: 'Descargar PDF',
+            tooltip: 'Enviar PDF',
           ),
         ],
       ),
@@ -104,9 +104,9 @@ class PDFPreviewPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  icon: const Icon(Icons.download),
+                  icon: const Icon(Icons.send),
                   label: const Text(
-                    'Descargar Informe',
+                    'Enviar Informe',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
