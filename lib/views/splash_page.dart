@@ -4,7 +4,9 @@ import 'dart:math' as math;
 /// Pantalla de carga personalizada para la aplicación IMC
 /// Diseño moderno y atractivo con múltiples animaciones
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});
+  final void Function(Locale locale)? setLocale;
+  final Locale? currentLocale;
+  const SplashPage({super.key, this.setLocale, this.currentLocale});
 
   @override
   State<SplashPage> createState() => _SplashPageState();

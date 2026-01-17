@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import '../controllers/imc_controller.dart';
 
@@ -49,10 +50,11 @@ class _FormularioPageState extends State<FormularioPage> {
     final isSmallScreen = screenHeight < 700;
     final isWideScreen = screenWidth > 400;
 
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Datos Personales',
+          loc.personalData,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -90,7 +92,7 @@ class _FormularioPageState extends State<FormularioPage> {
 
                         // Título e instrucciones - responsive
                         Text(
-                          'Ingresa tus datos',
+                          loc.enterYourData,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 24 : 28,
                             fontWeight: FontWeight.bold,
@@ -102,7 +104,7 @@ class _FormularioPageState extends State<FormularioPage> {
                         SizedBox(height: isSmallScreen ? 8 : 12),
 
                         Text(
-                          'Completa la información para calcular tu IMC',
+                          loc.completeInfoToCalculateImc,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 14 : 16,
                             color: Colors.white70,
@@ -126,17 +128,17 @@ class _FormularioPageState extends State<FormularioPage> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 // Campo Nombre
-                                _buildCampoNombre(isSmallScreen),
+                                _buildCampoNombre(isSmallScreen, loc),
 
                                 SizedBox(height: isSmallScreen ? 16 : 20),
 
                                 // Campo Peso
-                                _buildCampoPeso(isSmallScreen),
+                                _buildCampoPeso(isSmallScreen, loc),
 
                                 SizedBox(height: isSmallScreen ? 16 : 20),
 
                                 // Campo Altura
-                                _buildCampoAltura(isSmallScreen),
+                                _buildCampoAltura(isSmallScreen, loc),
 
                                 SizedBox(height: isSmallScreen ? 20 : 24),
 
@@ -163,7 +165,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                       SizedBox(width: isSmallScreen ? 8 : 12),
                                       Expanded(
                                         child: Text(
-                                          'Ingresa tu altura en metros (ej: 1.75)',
+                                          loc.enterHeightHint,
                                           style: TextStyle(
                                             fontSize: isSmallScreen ? 13 : 14,
                                             color: Colors.black87,
@@ -221,7 +223,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                 ),
                               )
                             : Text(
-                                'Calcular IMC',
+                                loc.calculateImc,
                                 style: TextStyle(
                                   fontSize: isSmallScreen ? 15 : 16,
                                   fontWeight: FontWeight.bold,
@@ -240,12 +242,12 @@ class _FormularioPageState extends State<FormularioPage> {
   }
 
   /// Widget para el campo de nombre - responsive
-  Widget _buildCampoNombre(bool isSmallScreen) {
+  Widget _buildCampoNombre(bool isSmallScreen, AppLocalizations loc) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Nombre',
+          loc.name,
           style: TextStyle(
             fontSize: isSmallScreen ? 14 : 16,
             fontWeight: FontWeight.bold,
@@ -256,7 +258,7 @@ class _FormularioPageState extends State<FormularioPage> {
         TextFormField(
           controller: _imcController.nombreController,
           decoration: InputDecoration(
-            hintText: 'Ingresa tu nombre',
+            hintText: loc.enterYourName,
             hintStyle: TextStyle(fontSize: isSmallScreen ? 14 : 16),
             prefixIcon: Icon(
               Icons.person,
@@ -291,12 +293,12 @@ class _FormularioPageState extends State<FormularioPage> {
   }
 
   /// Widget para el campo de peso - responsive
-  Widget _buildCampoPeso(bool isSmallScreen) {
+  Widget _buildCampoPeso(bool isSmallScreen, AppLocalizations loc) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Peso (kg)',
+          loc.weight,
           style: TextStyle(
             fontSize: isSmallScreen ? 14 : 16,
             fontWeight: FontWeight.bold,
@@ -307,7 +309,7 @@ class _FormularioPageState extends State<FormularioPage> {
         TextFormField(
           controller: _imcController.pesoController,
           decoration: InputDecoration(
-            hintText: 'Ej: 70.5',
+            hintText: loc.weightHint,
             hintStyle: TextStyle(fontSize: isSmallScreen ? 14 : 16),
             prefixIcon: Icon(
               Icons.monitor_weight,
@@ -350,12 +352,12 @@ class _FormularioPageState extends State<FormularioPage> {
   }
 
   /// Widget para el campo de altura - responsive
-  Widget _buildCampoAltura(bool isSmallScreen) {
+  Widget _buildCampoAltura(bool isSmallScreen, AppLocalizations loc) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Altura (m)',
+          loc.height,
           style: TextStyle(
             fontSize: isSmallScreen ? 14 : 16,
             fontWeight: FontWeight.bold,
@@ -366,7 +368,7 @@ class _FormularioPageState extends State<FormularioPage> {
         TextFormField(
           controller: _imcController.alturaController,
           decoration: InputDecoration(
-            hintText: 'Ej: 1.75',
+            hintText: loc.heightHint,
             hintStyle: TextStyle(fontSize: isSmallScreen ? 14 : 16),
             prefixIcon: Icon(
               Icons.height,

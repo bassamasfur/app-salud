@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../controllers/imc_controller.dart';
 import 'pdf_preview_page.dart';
+import '../l10n/app_localizations.dart';
 
 /// Página que muestra los resultados del cálculo del IMC
 /// Incluye el valor, categoría, recomendaciones y opciones de acción
@@ -32,10 +33,11 @@ class ResultadoPage extends StatelessWidget {
     final isSmallScreen = screenHeight < 700;
     final isWideScreen = screenWidth > 400;
 
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Resultado IMC',
+          loc.resultTitle,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -53,7 +55,7 @@ class ResultadoPage extends StatelessWidget {
               controller.limpiarDatos();
               Navigator.pushReplacementNamed(context, '/formulario');
             },
-            tooltip: 'Nuevo cálculo',
+            tooltip: loc.newCalculation,
           ),
         ],
       ),
@@ -81,7 +83,7 @@ class ResultadoPage extends StatelessWidget {
                       SizedBox(height: isSmallScreen ? 4 : 8),
 
                       // Saludo personalizado
-                      _buildSaludo(persona, isSmallScreen),
+                      _buildSaludo(persona, isSmallScreen, loc),
 
                       SizedBox(height: isSmallScreen ? 8 : 12),
 
@@ -96,21 +98,21 @@ class ResultadoPage extends StatelessWidget {
                           child: Column(
                             children: [
                               // Valor del IMC
-                              _buildValorIMC(persona, isSmallScreen),
+                              _buildValorIMC(persona, isSmallScreen, loc),
 
                               SizedBox(height: isSmallScreen ? 12 : 16),
 
                               // Categoría del IMC
-                              _buildCategoriaIMC(persona, isSmallScreen),
+                              _buildCategoriaIMC(persona, isSmallScreen, loc),
 
                               SizedBox(height: isSmallScreen ? 12 : 16),
 
                               // Interpretación solo si la categoría es normal, sobrepeso, bajo peso u obesidad
                               if ([
-                                "bajo peso",
-                                "normal",
-                                "sobrepeso",
-                                "obesidad",
+                                loc.underweight.toLowerCase(),
+                                loc.normal.toLowerCase(),
+                                loc.overweight.toLowerCase(),
+                                loc.obesity.toLowerCase(),
                               ].contains(
                                 persona.obtenerCategoriaIMC().toLowerCase(),
                               ))
@@ -135,7 +137,7 @@ class ResultadoPage extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'INTERPRETACIÓN',
+                                        loc.interpretation,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.blue[800],
@@ -146,6 +148,7 @@ class ResultadoPage extends StatelessWidget {
                                       Text(
                                         _getDescripcionCategoria(
                                           persona.obtenerCategoriaIMC(),
+                                          loc,
                                         ),
                                         style: TextStyle(
                                           fontSize: isSmallScreen ? 13 : 14,
@@ -157,7 +160,11 @@ class ResultadoPage extends StatelessWidget {
                                 ),
 
                               // Recomendaciones
-                              _buildRecomendaciones(persona, isSmallScreen),
+                              _buildRecomendaciones(
+                                persona,
+                                isSmallScreen,
+                                loc,
+                              ),
                             ],
                           ),
                         ),
@@ -202,7 +209,7 @@ class ResultadoPage extends StatelessWidget {
                           size: isSmallScreen ? 18 : 20,
                         ),
                         label: Text(
-                          'Calcular otro IMC',
+                          loc.calculateAnotherImc,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 15 : 16,
                             fontWeight: FontWeight.bold,
@@ -236,7 +243,7 @@ class ResultadoPage extends StatelessWidget {
                           size: isSmallScreen ? 18 : 20,
                         ),
                         label: Text(
-                          'Ver Informe',
+                          loc.viewReport,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 15 : 16,
                             fontWeight: FontWeight.bold,
@@ -269,7 +276,7 @@ class ResultadoPage extends StatelessWidget {
                         ),
                         icon: Icon(Icons.home, size: isSmallScreen ? 16 : 18),
                         label: Text(
-                          'Volver al inicio',
+                          loc.backToHome,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 14 : 15,
                             fontWeight: FontWeight.w600,
@@ -288,7 +295,7 @@ class ResultadoPage extends StatelessWidget {
   }
 
   /// Widget para mostrar el saludo personalizado
-  Widget _buildSaludo(persona, bool isSmallScreen) {
+  Widget _buildSaludo(persona, bool isSmallScreen, AppLocalizations loc) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: isSmallScreen ? 12 : 16,
@@ -315,7 +322,7 @@ class ResultadoPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '¡Hola, ${persona.nombre}!',
+                  loc.greeting(persona.nombre),
                   style: TextStyle(
                     fontSize: isSmallScreen ? 16 : 18,
                     fontWeight: FontWeight.bold,
@@ -323,7 +330,7 @@ class ResultadoPage extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Resultados de tu evaluación',
+                  loc.evaluationResults,
                   style: TextStyle(
                     fontSize: isSmallScreen ? 12 : 13,
                     color: Colors.white70,
@@ -338,7 +345,7 @@ class ResultadoPage extends StatelessWidget {
   }
 
   /// Widget para mostrar el valor del IMC
-  Widget _buildValorIMC(persona, bool isSmallScreen) {
+  Widget _buildValorIMC(persona, bool isSmallScreen, AppLocalizations loc) {
     return Row(
       children: [
         // Círculo del IMC más pequeño
@@ -388,7 +395,7 @@ class ResultadoPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Tu IMC es:',
+                loc.yourImcIs,
                 style: TextStyle(
                   fontSize: isSmallScreen ? 14 : 16,
                   color: Colors.grey[600],
@@ -397,7 +404,7 @@ class ResultadoPage extends StatelessWidget {
               ),
               SizedBox(height: isSmallScreen ? 4 : 6),
               Text(
-                persona.obtenerCategoriaIMC(),
+                _getCategoriaLocalizada(persona.obtenerCategoriaIMC(), loc),
                 style: TextStyle(
                   fontSize: isSmallScreen ? 18 : 20,
                   fontWeight: FontWeight.bold,
@@ -406,14 +413,14 @@ class ResultadoPage extends StatelessWidget {
               ),
               SizedBox(height: isSmallScreen ? 2 : 4),
               Text(
-                'Peso: ${persona.peso.toStringAsFixed(1)} kg',
+                loc.weightWithUnit(persona.peso.toStringAsFixed(1)),
                 style: TextStyle(
                   fontSize: isSmallScreen ? 12 : 13,
                   color: Colors.grey[500],
                 ),
               ),
               Text(
-                'Altura: ${persona.altura.toStringAsFixed(2)} m',
+                loc.heightWithUnit(persona.altura.toStringAsFixed(2)),
                 style: TextStyle(
                   fontSize: isSmallScreen ? 12 : 13,
                   color: Colors.grey[500],
@@ -427,8 +434,9 @@ class ResultadoPage extends StatelessWidget {
   }
 
   /// Widget para mostrar la categoría del IMC
-  Widget _buildCategoriaIMC(persona, bool isSmallScreen) {
+  Widget _buildCategoriaIMC(persona, bool isSmallScreen, AppLocalizations loc) {
     final categoria = persona.obtenerCategoriaIMC();
+    final categoriaLocalizada = _getCategoriaLocalizada(categoria, loc);
     final color = _getColorCategoria(categoria);
 
     return Container(
@@ -447,7 +455,7 @@ class ResultadoPage extends StatelessWidget {
           ),
           SizedBox(height: isSmallScreen ? 8 : 12),
           Text(
-            categoria,
+            categoriaLocalizada,
             style: TextStyle(
               fontSize: isSmallScreen ? 20 : 24,
               fontWeight: FontWeight.bold,
@@ -457,7 +465,7 @@ class ResultadoPage extends StatelessWidget {
           ),
           SizedBox(height: isSmallScreen ? 4 : 8),
           Text(
-            _getDescripcionCategoria(categoria),
+            _getDescripcionCategoria(categoria, loc),
             style: TextStyle(
               fontSize: isSmallScreen ? 14 : 16,
               color: Colors.grey[700],
@@ -471,8 +479,15 @@ class ResultadoPage extends StatelessWidget {
   }
 
   /// Widget para mostrar las recomendaciones
-  Widget _buildRecomendaciones(persona, bool isSmallScreen) {
-    final recomendaciones = _getRecomendaciones(persona.obtenerCategoriaIMC());
+  Widget _buildRecomendaciones(
+    persona,
+    bool isSmallScreen,
+    AppLocalizations loc,
+  ) {
+    final recomendaciones = _getRecomendaciones(
+      persona.obtenerCategoriaIMC(),
+      loc,
+    );
 
     return Container(
       padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
@@ -493,7 +508,7 @@ class ResultadoPage extends StatelessWidget {
               ),
               SizedBox(width: isSmallScreen ? 8 : 12),
               Text(
-                'Recomendaciones',
+                loc.recommendations,
                 style: TextStyle(
                   fontSize: isSmallScreen ? 16 : 18,
                   fontWeight: FontWeight.bold,
@@ -571,56 +586,34 @@ class ResultadoPage extends StatelessWidget {
   }
 
   /// Obtiene la descripción según la categoría del IMC
-  String _getDescripcionCategoria(String categoria) {
+  String _getDescripcionCategoria(String categoria, AppLocalizations loc) {
     switch (categoria.toLowerCase()) {
       case 'bajo peso':
-        return 'Tu peso está por debajo del rango saludable. Es recomendable consultar con un profesional de la salud.';
+        return loc.descUnderweight;
       case 'normal':
-        return '¡Felicidades! Tu peso está dentro del rango saludable. Mantén tus buenos hábitos.';
+        return loc.descNormal;
       case 'sobrepeso':
-        return 'Tu peso está ligeramente por encima del rango saludable. Considera hacer algunos ajustes en tu estilo de vida.';
+        return loc.descOverweight;
       case 'obesidad':
-        return 'Tu peso está significativamente por encima del rango saludable. Es importante buscar ayuda profesional.';
+        return loc.descObesity;
       default:
-        return 'Consulta con un profesional de la salud para más información.';
+        return loc.descDefault;
     }
   }
 
   /// Obtiene las recomendaciones según la categoría del IMC
-  List<String> _getRecomendaciones(String categoria) {
+  List<String> _getRecomendaciones(String categoria, AppLocalizations loc) {
     switch (categoria.toLowerCase()) {
       case 'bajo peso':
-        return [
-          'Consulta con un nutricionista para un plan de alimentación adecuado',
-          'Incluye alimentos ricos en proteínas y grasas saludables',
-          'Considera hacer ejercicio de fuerza para ganar masa muscular',
-          'Evita el estrés excesivo que puede afectar tu apetito',
-        ];
+        return loc.recommendationsUnderweight.split('|');
       case 'normal':
-        return [
-          'Mantén una dieta equilibrada rica en frutas y verduras',
-          'Realiza actividad física regular (al menos 150 min/semana)',
-          'Mantén un horario regular de comidas',
-          'Hidrátate adecuadamente (8 vasos de agua al día)',
-        ];
+        return loc.recommendationsNormal.split('|');
       case 'sobrepeso':
-        return [
-          'Reduce las porciones de comida gradualmente',
-          'Incrementa el consumo de fibra y proteínas magras',
-          'Realiza ejercicio cardiovascular regularmente',
-          'Limita alimentos procesados y bebidas azucaradas',
-        ];
+        return loc.recommendationsOverweight.split('|');
       case 'obesidad':
-        return [
-          'Consulta con un médico para un plan de pérdida de peso seguro',
-          'Considera trabajar con un nutricionista profesional',
-          'Inicia con ejercicio de baja intensidad y aumenta gradualmente',
-          'Busca apoyo emocional si es necesario',
-        ];
+        return loc.recommendationsObesity.split('|');
       default:
-        return [
-          'Consulta con un profesional de la salud para más información.',
-        ];
+        return [loc.recommendationsDefault];
     }
   }
 
@@ -629,5 +622,21 @@ class ResultadoPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => PDFPreviewPage(persona: persona)),
     );
+  }
+
+  /// Devuelve la categoría localizada según el idioma
+  String _getCategoriaLocalizada(String categoria, AppLocalizations loc) {
+    switch (categoria.toLowerCase()) {
+      case 'bajo peso':
+        return loc.underweight;
+      case 'normal':
+        return loc.normal;
+      case 'sobrepeso':
+        return loc.overweight;
+      case 'obesidad':
+        return loc.obesity;
+      default:
+        return categoria;
+    }
   }
 }

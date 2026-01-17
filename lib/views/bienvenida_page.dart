@@ -1,19 +1,49 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 /// Página de bienvenida de la aplicación IMC
 /// Primera pantalla que ve el usuario con información sobre la app
 class BienvenidaPage extends StatelessWidget {
-  const BienvenidaPage({super.key});
+  final void Function(Locale locale) setLocale;
+  final Locale? currentLocale;
+  const BienvenidaPage({
+    super.key,
+    required this.setLocale,
+    required this.currentLocale,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Obtener dimensiones de pantalla para responsividad
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenHeight < 700;
     final isWideScreen = screenWidth > 400;
+    String lang =
+        (currentLocale?.languageCode ??
+        Localizations.localeOf(context).languageCode);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(lang == 'es' ? 'Español' : 'English'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: TextButton.icon(
+              style: TextButton.styleFrom(foregroundColor: Colors.white),
+              icon: Icon(Icons.language),
+              label: Text(lang == 'es' ? 'ES' : 'EN'),
+              onPressed: () {
+                setLocale(
+                  lang == 'es' ? const Locale('en') : const Locale('es'),
+                );
+              },
+            ),
+          ),
+        ],
+        backgroundColor: const Color(0xFF2E86AB),
+        elevation: 0,
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -66,7 +96,7 @@ class BienvenidaPage extends StatelessWidget {
 
                       // Título principal - responsive
                       Text(
-                        'Calculadora IMC',
+                        loc.appTitle,
                         style: TextStyle(
                           fontSize: isSmallScreen ? 24 : 28,
                           fontWeight: FontWeight.bold,
@@ -79,7 +109,7 @@ class BienvenidaPage extends StatelessWidget {
 
                       // Subtítulo - responsive
                       Text(
-                        'Índice de Masa Corporal',
+                        loc.subtitle,
                         style: TextStyle(
                           fontSize: isSmallScreen ? 14 : 16,
                           color: Colors.white70,
@@ -107,7 +137,7 @@ class BienvenidaPage extends StatelessWidget {
                               ),
                               SizedBox(height: isSmallScreen ? 8 : 12),
                               Text(
-                                '¿Qué es el IMC?',
+                                loc.whatIsImcTitle,
                                 style: TextStyle(
                                   fontSize: isSmallScreen ? 16 : 18,
                                   fontWeight: FontWeight.bold,
@@ -116,7 +146,7 @@ class BienvenidaPage extends StatelessWidget {
                               ),
                               SizedBox(height: isSmallScreen ? 6 : 8),
                               Text(
-                                'El Índice de Masa Corporal es una medida que relaciona tu peso y altura para determinar si tienes un peso saludable.',
+                                loc.whatIsImcDesc,
                                 style: TextStyle(
                                   fontSize: isSmallScreen ? 13 : 14,
                                   color: Colors.black87,
@@ -138,7 +168,7 @@ class BienvenidaPage extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
-                                      'Rangos de IMC:',
+                                      loc.imcRanges,
                                       style: TextStyle(
                                         fontSize: isSmallScreen ? 14 : 15,
                                         fontWeight: FontWeight.bold,
@@ -147,25 +177,25 @@ class BienvenidaPage extends StatelessWidget {
                                     ),
                                     SizedBox(height: isSmallScreen ? 6 : 8),
                                     _buildRangoIMC(
-                                      'Bajo peso',
+                                      loc.underweight,
                                       '< 18.5',
                                       Colors.blue,
                                       isSmallScreen,
                                     ),
                                     _buildRangoIMC(
-                                      'Normal',
+                                      loc.normal,
                                       '18.5 - 24.9',
                                       Colors.green,
                                       isSmallScreen,
                                     ),
                                     _buildRangoIMC(
-                                      'Sobrepeso',
+                                      loc.overweight,
                                       '25.0 - 29.9',
                                       Colors.orange,
                                       isSmallScreen,
                                     ),
                                     _buildRangoIMC(
-                                      'Obesidad',
+                                      loc.obesity,
                                       '≥ 30.0',
                                       Colors.red,
                                       isSmallScreen,
@@ -209,7 +239,7 @@ class BienvenidaPage extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          'Calcular mi IMC',
+                          loc.calculateImc,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 15 : 16,
                             fontWeight: FontWeight.bold,
@@ -222,7 +252,7 @@ class BienvenidaPage extends StatelessWidget {
 
                     // Crédito del desarrollador - responsive
                     Text(
-                      'Desarrollado por Bassam Asfur',
+                      loc.developedBy,
                       style: TextStyle(
                         fontSize: isSmallScreen ? 11 : 12,
                         color: Colors.white70,

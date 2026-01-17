@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'views/splash_page.dart';
 import 'views/bienvenida_page.dart';
 import 'views/formulario_page.dart';
 import 'views/resultado_page.dart';
+import 'l10n/app_localizations.dart';
 
 void main() {
   runApp(const IMCApp());
@@ -10,8 +12,21 @@ void main() {
 
 /// Aplicación principal para calcular el Índice de Masa Corporal
 /// Implementa arquitectura MVC con navegación entre pantallas
-class IMCApp extends StatelessWidget {
+class IMCApp extends StatefulWidget {
   const IMCApp({super.key});
+
+  @override
+  State<IMCApp> createState() => _IMCAppState();
+}
+
+class _IMCAppState extends State<IMCApp> {
+  Locale? _locale;
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,23 +34,18 @@ class IMCApp extends StatelessWidget {
       title: 'Calculadora IMC',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // Tema personalizado con colores azules
         primarySwatch: Colors.blue,
         primaryColor: const Color(0xFF2E86AB),
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF2E86AB),
           brightness: Brightness.light,
         ),
-
-        // Configuración de AppBar
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFF2E86AB),
           foregroundColor: Colors.white,
           elevation: 0,
           centerTitle: true,
         ),
-
-        // Configuración de botones
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF2E86AB),
@@ -46,8 +56,6 @@ class IMCApp extends StatelessWidget {
             ),
           ),
         ),
-
-        // Configuración de campos de texto
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           focusedBorder: OutlineInputBorder(
@@ -57,16 +65,12 @@ class IMCApp extends StatelessWidget {
           filled: true,
           fillColor: Colors.grey[50],
         ),
-
-        // Configuración de Cards
         cardTheme: const CardThemeData(
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16)),
           ),
         ),
-
-        // Configuración de tipografía
         textTheme: const TextTheme(
           headlineLarge: TextStyle(
             fontSize: 32,
@@ -77,25 +81,28 @@ class IMCApp extends StatelessWidget {
           titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           bodyLarge: TextStyle(fontSize: 16, height: 1.5),
         ),
-
-        // Configuración de iconos
         iconTheme: const IconThemeData(color: Color(0xFF2E86AB)),
       ),
-
-      // Ruta inicial
+      locale: _locale,
+      supportedLocales: const [Locale('es'), Locale('en')],
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       initialRoute: '/',
-
-      // Configuración de rutas
       routes: {
-        '/': (context) => const SplashPage(),
-        '/bienvenida': (context) => const BienvenidaPage(),
+        '/': (context) => SplashPage(setLocale: setLocale),
+        '/bienvenida': (context) =>
+            BienvenidaPage(setLocale: setLocale, currentLocale: _locale),
         '/formulario': (context) => const FormularioPage(),
         '/resultado': (context) => const ResultadoPage(),
       },
-
-      // Manejo de rutas no encontradas
       onUnknownRoute: (settings) {
-        return MaterialPageRoute(builder: (context) => const SplashPage());
+        return MaterialPageRoute(
+          builder: (context) => SplashPage(setLocale: setLocale),
+        );
       },
     );
   }
