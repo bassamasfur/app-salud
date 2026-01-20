@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../l10n/app_localizations.dart';
 
 /// Página de bienvenida de la aplicación IMC
 /// Primera pantalla que ve el usuario con información sobre la app
 class BienvenidaPage extends StatelessWidget {
-  final void Function(Locale locale) setLocale;
-  final Locale? currentLocale;
-  const BienvenidaPage({
+  static const String _bannerAdUnitId =
+      'ca-app-pub-9670246345724768/1514731298'; // Nuevo ID real de AdMob para producción
+
+  BienvenidaPage({
     super.key,
     required this.setLocale,
     required this.currentLocale,
-  });
+  }) : _bannerAd = BannerAd(
+         adUnitId: _bannerAdUnitId,
+         size: AdSize.banner,
+         request: AdRequest(),
+         listener: BannerAdListener(),
+       ) {
+    _bannerAd.load();
+  }
+
+  final BannerAd _bannerAd;
+  final void Function(Locale locale) setLocale;
+  final Locale? currentLocale;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +77,19 @@ class BienvenidaPage extends StatelessWidget {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
+
                     children: [
+                      SizedBox(height: isSmallScreen ? 10 : 20),
+
+                      // Banner de AdMob
+                      Center(
+                        child: SizedBox(
+                          width: _bannerAd.size.width.toDouble(),
+                          height: _bannerAd.size.height.toDouble(),
+                          child: AdWidget(ad: _bannerAd),
+                        ),
+                      ),
+
                       SizedBox(height: isSmallScreen ? 10 : 20),
 
                       // Logo/Icono de la aplicación - responsive
@@ -78,7 +103,7 @@ class BienvenidaPage extends StatelessWidget {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
+                              color: Colors.black.withOpacity(0.1),
                               spreadRadius: 2,
                               blurRadius: 10,
                               offset: const Offset(0, 4),
