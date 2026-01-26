@@ -1,4 +1,4 @@
-  {
+{
     "appTitle": "BMI Calculator",
     "subtitle": "Body Mass Index",
     "whatIsImcTitle": "What is BMI?",
@@ -41,6 +41,8 @@
     "recommendationsDefault": "Consult a health professional for more information.",
     "calculateAnotherImc": "Calculate another BMI",
     "viewReport": "View Report",
+    "viewReportCancel": "Cancel",
+    "viewReportSend": "Send Report",
     "backToHome": "Back to Home",
     "pdfTitle": "BODY MASS INDEX (BMI) REPORT",
     "@pdfTitle": {"description": "Title for the PDF report"},

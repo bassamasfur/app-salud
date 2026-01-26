@@ -1,4 +1,4 @@
-  {
+{
     "appTitle": "Calculadora IMC",
     "subtitle": "Índice de Masa Corporal",
     "whatIsImcTitle": "¿Qué es el IMC?",
@@ -41,6 +41,8 @@
     "recommendationsDefault": "Consulta con un profesional de la salud para más información.",
     "calculateAnotherImc": "Calcular otro IMC",
     "viewReport": "Ver Informe",
+    "viewReportCancel": "Cancelar",
+    "viewReportSend": "Enviar Informe",
     "backToHome": "Volver al inicio",
     "pdfTitle": "INFORME DE ÍNDICE DE MASA CORPORAL (IMC)",
     "@pdfTitle": {"description": "Título del informe PDF"},

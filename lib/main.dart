@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// ...import eliminado: google_mobile_ads...
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'views/splash_page.dart';
 import 'views/bienvenida_page.dart';
@@ -10,7 +10,7 @@ import 'l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Inicializa el SDK de Google Mobile Ads
-  await MobileAds.instance.initialize();
+  // ...MobileAds.instance.initialize() eliminado...
   runApp(const IMCApp());
 }
 

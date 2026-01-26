@@ -86,9 +86,9 @@ class PDFPreviewPage extends StatelessWidget {
                     ),
                   ),
                   icon: const Icon(Icons.close),
-                  label: const Text(
-                    'Cancelar',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  label: Text(
+                    loc.viewReportCancel,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -110,9 +110,9 @@ class PDFPreviewPage extends StatelessWidget {
                     ),
                   ),
                   icon: const Icon(Icons.send),
-                  label: const Text(
-                    'Enviar Informe',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  label: Text(
+                    loc.viewReportSend,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
