@@ -18,7 +18,13 @@ class BienvenidaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenHeight < 700;
+
+    // Sistema de 3 niveles para mejor compatibilidad
+    final isTinyScreen = screenHeight < 600; // < 5.5" (iPhone SE, Galaxy S5)
+    final isSmallScreen =
+        screenHeight >= 600 && screenHeight < 680; // 5.5"-6" (S8, Pixel 4a)
+    // Para pantallas >= 680px usamos los valores por defecto
+
     final isWideScreen = screenWidth > 400;
     String lang =
         (currentLocale?.languageCode ??
@@ -62,13 +68,17 @@ class BienvenidaPage extends StatelessWidget {
                 child: SingleChildScrollView(
                   padding: EdgeInsets.symmetric(
                     horizontal: isWideScreen ? 24.0 : 20.0,
-                    vertical: isSmallScreen ? 12.0 : 16.0,
+                    vertical: isTinyScreen
+                        ? 8.0
+                        : (isSmallScreen ? 12.0 : 16.0),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
 
                     children: [
-                      SizedBox(height: isSmallScreen ? 10 : 20),
+                      SizedBox(
+                        height: isTinyScreen ? 6 : (isSmallScreen ? 10 : 20),
+                      ),
 
                       // ...Banner de AdMob eliminado...
                       Center(
@@ -77,20 +87,22 @@ class BienvenidaPage extends StatelessWidget {
                         ),
                       ),
 
-                      SizedBox(height: isSmallScreen ? 10 : 20),
+                      SizedBox(
+                        height: isTinyScreen ? 6 : (isSmallScreen ? 10 : 20),
+                      ),
 
                       // Logo/Icono de la aplicación - responsive
                       Container(
-                        width: isSmallScreen ? 50 : 60,
-                        height: isSmallScreen ? 50 : 60,
+                        width: isTinyScreen ? 45 : (isSmallScreen ? 50 : 60),
+                        height: isTinyScreen ? 45 : (isSmallScreen ? 50 : 60),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(
-                            isSmallScreen ? 25 : 30,
+                            isTinyScreen ? 22 : (isSmallScreen ? 25 : 30),
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: 0.1),
                               spreadRadius: 2,
                               blurRadius: 10,
                               offset: const Offset(0, 4),
@@ -99,38 +111,48 @@ class BienvenidaPage extends StatelessWidget {
                         ),
                         child: Icon(
                           Icons.monitor_weight,
-                          size: isSmallScreen ? 26 : 32,
+                          size: isTinyScreen ? 24 : (isSmallScreen ? 26 : 32),
                           color: const Color(0xFF2E86AB),
                         ),
                       ),
 
-                      SizedBox(height: isSmallScreen ? 12 : 16),
+                      SizedBox(
+                        height: isTinyScreen ? 10 : (isSmallScreen ? 12 : 16),
+                      ),
 
                       // Título principal - responsive
                       Text(
                         loc.appTitle,
                         style: TextStyle(
-                          fontSize: isSmallScreen ? 24 : 28,
+                          fontSize: isTinyScreen
+                              ? 22
+                              : (isSmallScreen ? 24 : 28),
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                         textAlign: TextAlign.center,
                       ),
 
-                      SizedBox(height: isSmallScreen ? 6 : 8),
+                      SizedBox(
+                        height: isTinyScreen ? 4 : (isSmallScreen ? 6 : 8),
+                      ),
 
                       // Subtítulo - responsive
                       Text(
                         loc.subtitle,
                         style: TextStyle(
-                          fontSize: isSmallScreen ? 14 : 16,
+                          fontSize: isTinyScreen
+                              ? 13
+                              : (isSmallScreen ? 14 : 16),
                           color: Colors.white70,
                           fontWeight: FontWeight.w300,
                         ),
                         textAlign: TextAlign.center,
                       ),
 
-                      SizedBox(height: isSmallScreen ? 16 : 20),
+                      SizedBox(
+                        height: isTinyScreen ? 12 : (isSmallScreen ? 16 : 20),
+                      ),
 
                       // Card con información - responsive
                       Card(
@@ -139,39 +161,59 @@ class BienvenidaPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Padding(
-                          padding: EdgeInsets.all(isSmallScreen ? 12.0 : 16.0),
+                          padding: EdgeInsets.all(
+                            isTinyScreen ? 6.0 : (isSmallScreen ? 8.0 : 14.0),
+                          ),
                           child: Column(
                             children: [
                               Icon(
                                 Icons.info_outline,
-                                size: isSmallScreen ? 30 : 36,
+                                size: isTinyScreen
+                                    ? 26
+                                    : (isSmallScreen ? 28 : 36),
                                 color: const Color(0xFF2E86AB),
                               ),
-                              SizedBox(height: isSmallScreen ? 8 : 12),
+                              SizedBox(
+                                height: isTinyScreen
+                                    ? 4
+                                    : (isSmallScreen ? 6 : 10),
+                              ),
                               Text(
                                 loc.whatIsImcTitle,
                                 style: TextStyle(
-                                  fontSize: isSmallScreen ? 16 : 18,
+                                  fontSize: isTinyScreen
+                                      ? 14
+                                      : (isSmallScreen ? 15 : 18),
                                   fontWeight: FontWeight.bold,
                                   color: const Color(0xFF2E86AB),
                                 ),
                               ),
-                              SizedBox(height: isSmallScreen ? 6 : 8),
+                              SizedBox(
+                                height: isTinyScreen
+                                    ? 3
+                                    : (isSmallScreen ? 4 : 6),
+                              ),
                               Text(
                                 loc.whatIsImcDesc,
                                 style: TextStyle(
-                                  fontSize: isSmallScreen ? 13 : 14,
+                                  fontSize: isTinyScreen
+                                      ? 11
+                                      : (isSmallScreen ? 12 : 14),
                                   color: Colors.black87,
-                                  height: 1.4,
+                                  height: 1.3,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(height: isSmallScreen ? 12 : 16),
+                              SizedBox(
+                                height: isTinyScreen
+                                    ? 6
+                                    : (isSmallScreen ? 8 : 14),
+                              ),
 
                               // Rangos de IMC - responsive
                               Container(
                                 padding: EdgeInsets.all(
-                                  isSmallScreen ? 10 : 12,
+                                  isTinyScreen ? 6 : (isSmallScreen ? 8 : 12),
                                 ),
                                 decoration: BoxDecoration(
                                   color: Colors.grey[50],
@@ -182,34 +224,44 @@ class BienvenidaPage extends StatelessWidget {
                                     Text(
                                       loc.imcRanges,
                                       style: TextStyle(
-                                        fontSize: isSmallScreen ? 14 : 15,
+                                        fontSize: isTinyScreen
+                                            ? 12
+                                            : (isSmallScreen ? 13 : 15),
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black87,
                                       ),
                                     ),
-                                    SizedBox(height: isSmallScreen ? 6 : 8),
+                                    SizedBox(
+                                      height: isTinyScreen
+                                          ? 3
+                                          : (isSmallScreen ? 4 : 6),
+                                    ),
                                     _buildRangoIMC(
                                       loc.underweight,
                                       '< 18.5',
                                       Colors.blue,
+                                      isTinyScreen,
                                       isSmallScreen,
                                     ),
                                     _buildRangoIMC(
                                       loc.normal,
                                       '18.5 - 24.9',
                                       Colors.green,
+                                      isTinyScreen,
                                       isSmallScreen,
                                     ),
                                     _buildRangoIMC(
                                       loc.overweight,
                                       '25.0 - 29.9',
                                       Colors.orange,
+                                      isTinyScreen,
                                       isSmallScreen,
                                     ),
                                     _buildRangoIMC(
                                       loc.obesity,
                                       '≥ 30.0',
                                       Colors.red,
+                                      isTinyScreen,
                                       isSmallScreen,
                                     ),
                                   ],
@@ -235,7 +287,7 @@ class BienvenidaPage extends StatelessWidget {
                     // Botón para comenzar - responsive
                     SizedBox(
                       width: double.infinity,
-                      height: isSmallScreen ? 45 : 50,
+                      height: isTinyScreen ? 42 : (isSmallScreen ? 45 : 50),
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pushNamed(context, '/formulario');
@@ -246,27 +298,31 @@ class BienvenidaPage extends StatelessWidget {
                           elevation: 4,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
-                              isSmallScreen ? 22 : 25,
+                              isTinyScreen ? 21 : (isSmallScreen ? 22 : 25),
                             ),
                           ),
                         ),
                         child: Text(
                           loc.calculateImc,
                           style: TextStyle(
-                            fontSize: isSmallScreen ? 15 : 16,
+                            fontSize: isTinyScreen
+                                ? 14
+                                : (isSmallScreen ? 15 : 16),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
 
-                    SizedBox(height: isSmallScreen ? 8 : 12),
+                    SizedBox(
+                      height: isTinyScreen ? 6 : (isSmallScreen ? 8 : 12),
+                    ),
 
                     // Crédito del desarrollador - responsive
                     Text(
                       loc.developedBy,
                       style: TextStyle(
-                        fontSize: isSmallScreen ? 11 : 12,
+                        fontSize: isTinyScreen ? 10 : (isSmallScreen ? 11 : 12),
                         color: Colors.white70,
                         fontWeight: FontWeight.w300,
                       ),
@@ -287,26 +343,31 @@ class BienvenidaPage extends StatelessWidget {
     String categoria,
     String rango,
     Color color,
+    bool isTinyScreen,
     bool isSmallScreen,
   ) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 1 : 2),
+      padding: EdgeInsets.symmetric(
+        vertical: isTinyScreen ? 0.3 : (isSmallScreen ? 0.5 : 2),
+      ),
       child: Row(
         children: [
           Container(
-            width: isSmallScreen ? 10 : 12,
-            height: isSmallScreen ? 10 : 12,
+            width: isTinyScreen ? 9 : (isSmallScreen ? 10 : 12),
+            height: isTinyScreen ? 9 : (isSmallScreen ? 10 : 12),
             decoration: BoxDecoration(
               color: color,
-              borderRadius: BorderRadius.circular(isSmallScreen ? 5 : 6),
+              borderRadius: BorderRadius.circular(
+                isTinyScreen ? 4.5 : (isSmallScreen ? 5 : 6),
+              ),
             ),
           ),
-          SizedBox(width: isSmallScreen ? 6 : 8),
+          SizedBox(width: isTinyScreen ? 5 : (isSmallScreen ? 6 : 8)),
           Expanded(
             child: Text(
               categoria,
               style: TextStyle(
-                fontSize: isSmallScreen ? 12 : 13,
+                fontSize: isTinyScreen ? 10 : (isSmallScreen ? 11 : 13),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -314,7 +375,7 @@ class BienvenidaPage extends StatelessWidget {
           Text(
             rango,
             style: TextStyle(
-              fontSize: isSmallScreen ? 12 : 13,
+              fontSize: isTinyScreen ? 10 : (isSmallScreen ? 11 : 13),
               color: Colors.grey[600],
               fontWeight: FontWeight.w500,
             ),

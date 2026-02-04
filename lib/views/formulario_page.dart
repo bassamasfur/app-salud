@@ -47,7 +47,13 @@ class _FormularioPageState extends State<FormularioPage> {
     // Obtener dimensiones de pantalla para responsividad
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenHeight < 700;
+
+    // Sistema de 3 niveles para mejor compatibilidad
+    final isTinyScreen = screenHeight < 600; // < 5.5" (iPhone SE, Galaxy S5)
+    final isSmallScreen =
+        screenHeight >= 600 && screenHeight < 680; // 5.5"-6" (S8, Pixel 4a)
+    // Para pantallas >= 680px usamos los valores por defecto
+
     final isWideScreen = screenWidth > 400;
 
     final loc = AppLocalizations.of(context)!;
@@ -58,7 +64,7 @@ class _FormularioPageState extends State<FormularioPage> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
-            fontSize: isSmallScreen ? 18 : 20,
+            fontSize: isTinyScreen ? 16 : (isSmallScreen ? 18 : 20),
           ),
         ),
         backgroundColor: const Color(0xFF2E86AB),
@@ -81,38 +87,50 @@ class _FormularioPageState extends State<FormularioPage> {
                 child: SingleChildScrollView(
                   padding: EdgeInsets.symmetric(
                     horizontal: isWideScreen ? 24.0 : 20.0,
-                    vertical: isSmallScreen ? 12.0 : 20.0,
+                    vertical: isTinyScreen
+                        ? 8.0
+                        : (isSmallScreen ? 12.0 : 20.0),
                   ),
                   child: Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: isSmallScreen ? 10 : 20),
+                        SizedBox(
+                          height: isTinyScreen ? 4 : (isSmallScreen ? 6 : 16),
+                        ),
 
                         // Título e instrucciones - responsive
                         Text(
                           loc.enterYourData,
                           style: TextStyle(
-                            fontSize: isSmallScreen ? 24 : 28,
+                            fontSize: isTinyScreen
+                                ? 20
+                                : (isSmallScreen ? 22 : 28),
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                           textAlign: TextAlign.center,
                         ),
 
-                        SizedBox(height: isSmallScreen ? 8 : 12),
+                        SizedBox(
+                          height: isTinyScreen ? 4 : (isSmallScreen ? 6 : 10),
+                        ),
 
                         Text(
                           loc.completeInfoToCalculateImc,
                           style: TextStyle(
-                            fontSize: isSmallScreen ? 14 : 16,
+                            fontSize: isTinyScreen
+                                ? 12
+                                : (isSmallScreen ? 13 : 16),
                             color: Colors.white70,
                           ),
                           textAlign: TextAlign.center,
                         ),
 
-                        SizedBox(height: isSmallScreen ? 20 : 30),
+                        SizedBox(
+                          height: isTinyScreen ? 10 : (isSmallScreen ? 14 : 24),
+                        ),
 
                         // Card con el formulario - responsive
                         Card(
@@ -122,34 +140,60 @@ class _FormularioPageState extends State<FormularioPage> {
                           ),
                           child: Padding(
                             padding: EdgeInsets.all(
-                              isSmallScreen ? 16.0 : 20.0,
+                              isTinyScreen
+                                  ? 10.0
+                                  : (isSmallScreen ? 12.0 : 18.0),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 // Campo Nombre
-                                _buildCampoNombre(isSmallScreen, loc),
+                                _buildCampoNombre(
+                                  isTinyScreen,
+                                  isSmallScreen,
+                                  loc,
+                                ),
 
-                                SizedBox(height: isSmallScreen ? 16 : 20),
+                                SizedBox(
+                                  height: isTinyScreen
+                                      ? 10
+                                      : (isSmallScreen ? 12 : 18),
+                                ),
 
                                 // Campo Peso
-                                _buildCampoPeso(isSmallScreen, loc),
+                                _buildCampoPeso(
+                                  isTinyScreen,
+                                  isSmallScreen,
+                                  loc,
+                                ),
 
-                                SizedBox(height: isSmallScreen ? 16 : 20),
+                                SizedBox(
+                                  height: isTinyScreen
+                                      ? 10
+                                      : (isSmallScreen ? 12 : 18),
+                                ),
 
                                 // Campo Altura
-                                _buildCampoAltura(isSmallScreen, loc),
+                                _buildCampoAltura(
+                                  isTinyScreen,
+                                  isSmallScreen,
+                                  loc,
+                                ),
 
-                                SizedBox(height: isSmallScreen ? 20 : 24),
+                                SizedBox(
+                                  height: isTinyScreen
+                                      ? 10
+                                      : (isSmallScreen ? 14 : 20),
+                                ),
 
                                 // Información adicional - responsive
                                 Container(
                                   padding: EdgeInsets.all(
-                                    isSmallScreen ? 12 : 16,
+                                    isTinyScreen ? 6 : (isSmallScreen ? 8 : 14),
                                   ),
                                   decoration: BoxDecoration(
                                     color: Colors.blue[50],
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
                                       color: Colors.blue[200]!,
                                       width: 1,
@@ -160,15 +204,24 @@ class _FormularioPageState extends State<FormularioPage> {
                                       Icon(
                                         Icons.info_outline,
                                         color: Colors.blue[600],
-                                        size: isSmallScreen ? 18 : 20,
+                                        size: isTinyScreen
+                                            ? 15
+                                            : (isSmallScreen ? 16 : 20),
                                       ),
-                                      SizedBox(width: isSmallScreen ? 8 : 12),
+                                      SizedBox(
+                                        width: isTinyScreen
+                                            ? 5
+                                            : (isSmallScreen ? 6 : 10),
+                                      ),
                                       Expanded(
                                         child: Text(
                                           loc.enterHeightHint,
                                           style: TextStyle(
-                                            fontSize: isSmallScreen ? 13 : 14,
+                                            fontSize: isTinyScreen
+                                                ? 10.5
+                                                : (isSmallScreen ? 11.5 : 14),
                                             color: Colors.black87,
+                                            height: 1.3,
                                           ),
                                         ),
                                       ),
@@ -189,14 +242,14 @@ class _FormularioPageState extends State<FormularioPage> {
               Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: isWideScreen ? 24.0 : 20.0,
-                  vertical: isSmallScreen ? 12.0 : 16.0,
+                  vertical: isTinyScreen ? 8.0 : (isSmallScreen ? 12.0 : 16.0),
                 ),
                 child: AnimatedBuilder(
                   animation: _imcController,
                   builder: (context, child) {
                     return SizedBox(
                       width: double.infinity,
-                      height: isSmallScreen ? 45 : 50,
+                      height: isTinyScreen ? 42 : (isSmallScreen ? 45 : 50),
                       child: ElevatedButton(
                         onPressed: _imcController.isLoading
                             ? null
@@ -207,14 +260,18 @@ class _FormularioPageState extends State<FormularioPage> {
                           elevation: 4,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
-                              isSmallScreen ? 22 : 25,
+                              isTinyScreen ? 21 : (isSmallScreen ? 22 : 25),
                             ),
                           ),
                         ),
                         child: _imcController.isLoading
                             ? SizedBox(
-                                width: isSmallScreen ? 20 : 24,
-                                height: isSmallScreen ? 20 : 24,
+                                width: isTinyScreen
+                                    ? 18
+                                    : (isSmallScreen ? 20 : 24),
+                                height: isTinyScreen
+                                    ? 18
+                                    : (isSmallScreen ? 20 : 24),
                                 child: const CircularProgressIndicator(
                                   strokeWidth: 2,
                                   valueColor: AlwaysStoppedAnimation<Color>(
@@ -225,7 +282,9 @@ class _FormularioPageState extends State<FormularioPage> {
                             : Text(
                                 loc.calculateImc,
                                 style: TextStyle(
-                                  fontSize: isSmallScreen ? 15 : 16,
+                                  fontSize: isTinyScreen
+                                      ? 14
+                                      : (isSmallScreen ? 15 : 16),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -242,28 +301,34 @@ class _FormularioPageState extends State<FormularioPage> {
   }
 
   /// Widget para el campo de nombre - responsive
-  Widget _buildCampoNombre(bool isSmallScreen, AppLocalizations loc) {
+  Widget _buildCampoNombre(
+    bool isTinyScreen,
+    bool isSmallScreen,
+    AppLocalizations loc,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           loc.name,
           style: TextStyle(
-            fontSize: isSmallScreen ? 14 : 16,
+            fontSize: isTinyScreen ? 13 : (isSmallScreen ? 14 : 16),
             fontWeight: FontWeight.bold,
             color: const Color(0xFF2E86AB),
           ),
         ),
-        SizedBox(height: isSmallScreen ? 6 : 8),
+        SizedBox(height: isTinyScreen ? 3 : (isSmallScreen ? 4 : 6)),
         TextFormField(
           controller: _imcController.nombreController,
           decoration: InputDecoration(
             hintText: loc.enterYourName,
-            hintStyle: TextStyle(fontSize: isSmallScreen ? 14 : 16),
+            hintStyle: TextStyle(
+              fontSize: isTinyScreen ? 13 : (isSmallScreen ? 14 : 16),
+            ),
             prefixIcon: Icon(
               Icons.person,
               color: const Color(0xFF2E86AB),
-              size: isSmallScreen ? 20 : 24,
+              size: isTinyScreen ? 18 : (isSmallScreen ? 20 : 24),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -280,11 +345,13 @@ class _FormularioPageState extends State<FormularioPage> {
             filled: true,
             fillColor: Colors.grey[50],
             contentPadding: EdgeInsets.symmetric(
-              horizontal: isSmallScreen ? 12 : 16,
-              vertical: isSmallScreen ? 12 : 16,
+              horizontal: isTinyScreen ? 8 : (isSmallScreen ? 10 : 14),
+              vertical: isTinyScreen ? 8 : (isSmallScreen ? 10 : 14),
             ),
           ),
-          style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
+          style: TextStyle(
+            fontSize: isTinyScreen ? 13 : (isSmallScreen ? 14 : 16),
+          ),
           textCapitalization: TextCapitalization.words,
           validator: _imcController.validarNombre,
         ),
@@ -293,32 +360,38 @@ class _FormularioPageState extends State<FormularioPage> {
   }
 
   /// Widget para el campo de peso - responsive
-  Widget _buildCampoPeso(bool isSmallScreen, AppLocalizations loc) {
+  Widget _buildCampoPeso(
+    bool isTinyScreen,
+    bool isSmallScreen,
+    AppLocalizations loc,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           loc.weight,
           style: TextStyle(
-            fontSize: isSmallScreen ? 14 : 16,
+            fontSize: isTinyScreen ? 13 : (isSmallScreen ? 14 : 16),
             fontWeight: FontWeight.bold,
             color: const Color(0xFF2E86AB),
           ),
         ),
-        SizedBox(height: isSmallScreen ? 6 : 8),
+        SizedBox(height: isTinyScreen ? 3 : (isSmallScreen ? 4 : 6)),
         TextFormField(
           controller: _imcController.pesoController,
           decoration: InputDecoration(
             hintText: loc.weightHint,
-            hintStyle: TextStyle(fontSize: isSmallScreen ? 14 : 16),
+            hintStyle: TextStyle(
+              fontSize: isTinyScreen ? 13 : (isSmallScreen ? 14 : 16),
+            ),
             prefixIcon: Icon(
               Icons.monitor_weight,
               color: const Color(0xFF2E86AB),
-              size: isSmallScreen ? 20 : 24,
+              size: isTinyScreen ? 18 : (isSmallScreen ? 20 : 24),
             ),
             suffixText: 'kg',
             suffixStyle: TextStyle(
-              fontSize: isSmallScreen ? 14 : 16,
+              fontSize: isTinyScreen ? 13 : (isSmallScreen ? 14 : 16),
               color: Colors.grey[600],
             ),
             border: OutlineInputBorder(
@@ -336,11 +409,13 @@ class _FormularioPageState extends State<FormularioPage> {
             filled: true,
             fillColor: Colors.grey[50],
             contentPadding: EdgeInsets.symmetric(
-              horizontal: isSmallScreen ? 12 : 16,
-              vertical: isSmallScreen ? 12 : 16,
+              horizontal: isTinyScreen ? 8 : (isSmallScreen ? 10 : 14),
+              vertical: isTinyScreen ? 8 : (isSmallScreen ? 10 : 14),
             ),
           ),
-          style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
+          style: TextStyle(
+            fontSize: isTinyScreen ? 13 : (isSmallScreen ? 14 : 16),
+          ),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
@@ -352,32 +427,38 @@ class _FormularioPageState extends State<FormularioPage> {
   }
 
   /// Widget para el campo de altura - responsive
-  Widget _buildCampoAltura(bool isSmallScreen, AppLocalizations loc) {
+  Widget _buildCampoAltura(
+    bool isTinyScreen,
+    bool isSmallScreen,
+    AppLocalizations loc,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           loc.height,
           style: TextStyle(
-            fontSize: isSmallScreen ? 14 : 16,
+            fontSize: isTinyScreen ? 13 : (isSmallScreen ? 14 : 16),
             fontWeight: FontWeight.bold,
             color: const Color(0xFF2E86AB),
           ),
         ),
-        SizedBox(height: isSmallScreen ? 6 : 8),
+        SizedBox(height: isTinyScreen ? 3 : (isSmallScreen ? 4 : 6)),
         TextFormField(
           controller: _imcController.alturaController,
           decoration: InputDecoration(
             hintText: loc.heightHint,
-            hintStyle: TextStyle(fontSize: isSmallScreen ? 14 : 16),
+            hintStyle: TextStyle(
+              fontSize: isTinyScreen ? 13 : (isSmallScreen ? 14 : 16),
+            ),
             prefixIcon: Icon(
               Icons.height,
               color: const Color(0xFF2E86AB),
-              size: isSmallScreen ? 20 : 24,
+              size: isTinyScreen ? 18 : (isSmallScreen ? 20 : 24),
             ),
             suffixText: 'm',
             suffixStyle: TextStyle(
-              fontSize: isSmallScreen ? 14 : 16,
+              fontSize: isTinyScreen ? 13 : (isSmallScreen ? 14 : 16),
               color: Colors.grey[600],
             ),
             border: OutlineInputBorder(
@@ -395,11 +476,13 @@ class _FormularioPageState extends State<FormularioPage> {
             filled: true,
             fillColor: Colors.grey[50],
             contentPadding: EdgeInsets.symmetric(
-              horizontal: isSmallScreen ? 12 : 16,
-              vertical: isSmallScreen ? 12 : 16,
+              horizontal: isTinyScreen ? 8 : (isSmallScreen ? 10 : 14),
+              vertical: isTinyScreen ? 8 : (isSmallScreen ? 10 : 14),
             ),
           ),
-          style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
+          style: TextStyle(
+            fontSize: isTinyScreen ? 13 : (isSmallScreen ? 14 : 16),
+          ),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
