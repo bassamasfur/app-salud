@@ -4,6 +4,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import '../models/persona.dart';
+import '../models/enums.dart';
 import '../l10n/app_localizations.dart';
 
 /// Servicio para generar informes en PDF de los resultados del IMC
@@ -51,6 +52,20 @@ class PDFService {
     final fecha = DateTime.now();
     final recomendaciones = _obtenerRecomendaciones(categoria, loc);
 
+    // Verificar si hay datos premium disponibles
+    final tieneDatosPremium =
+        persona.edad != null &&
+        persona.sexo != null &&
+        persona.nivelActividad != null;
+
+    Map<String, dynamic>? pesoIdeal;
+    Map<String, dynamic>? metasCalorias;
+
+    if (tieneDatosPremium) {
+      pesoIdeal = persona.calcularPesoIdeal();
+      metasCalorias = persona.calcularMetasCalorias();
+    }
+
     // Crear las páginas del PDF
     pdf.addPage(
       pw.MultiPage(
@@ -79,6 +94,18 @@ class PDFService {
 
           // Recomendaciones
           _construirRecomendaciones(recomendaciones, loc),
+
+          // SECCIONES PREMIUM (si están disponibles)
+          if (tieneDatosPremium) ...[
+            pw.SizedBox(height: 30),
+            _construirDivisor(),
+            pw.SizedBox(height: 20),
+            _construirTituloPremium(),
+            pw.SizedBox(height: 20),
+            _construirPesoIdeal(pesoIdeal!, loc),
+            pw.SizedBox(height: 20),
+            _construirPlanNutricional(metasCalorias!, persona, loc),
+          ],
 
           pw.SizedBox(height: 30),
 
@@ -189,6 +216,34 @@ class PDFService {
               ),
             ],
           ),
+          // Datos adicionales premium (si están disponibles)
+          if (persona.edad != null ||
+              persona.sexo != null ||
+              persona.nivelActividad != null) ...[
+            pw.SizedBox(height: 5),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                if (persona.edad != null)
+                  pw.Text(
+                    'Edad: ${persona.edad} años',
+                    style: const pw.TextStyle(fontSize: 12),
+                  ),
+                if (persona.sexo != null)
+                  pw.Text(
+                    'Sexo: ${persona.sexo!.name == 'hombre' ? 'Hombre' : 'Mujer'}',
+                    style: const pw.TextStyle(fontSize: 12),
+                  ),
+              ],
+            ),
+            if (persona.nivelActividad != null) ...[
+              pw.SizedBox(height: 5),
+              pw.Text(
+                'Nivel de Actividad: ${persona.nivelActividad!.descripcion}',
+                style: const pw.TextStyle(fontSize: 12),
+              ),
+            ],
+          ],
         ],
       ),
     );
@@ -406,6 +461,380 @@ class PDFService {
                 ],
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Construye un divisor visual para separar secciones
+  static pw.Widget _construirDivisor() {
+    return pw.Column(
+      children: [
+        pw.Container(height: 2, color: PdfColors.green400),
+        pw.SizedBox(height: 10),
+        pw.Container(
+          padding: const pw.EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          decoration: pw.BoxDecoration(
+            color: PdfColors.green50,
+            borderRadius: const pw.BorderRadius.all(pw.Radius.circular(20)),
+          ),
+          child: pw.Text(
+            '★ ANÁLISIS PREMIUM ★',
+            style: pw.TextStyle(
+              fontSize: 12,
+              fontWeight: pw.FontWeight.bold,
+              color: PdfColors.green800,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Título de la sección premium
+  static pw.Widget _construirTituloPremium() {
+    return pw.Center(
+      child: pw.Text(
+        'Plan Personalizado de Salud',
+        style: pw.TextStyle(
+          fontSize: 16,
+          fontWeight: pw.FontWeight.bold,
+          color: PdfColors.green800,
+        ),
+      ),
+    );
+  }
+
+  /// Construye la sección de peso ideal
+  static pw.Widget _construirPesoIdeal(
+    Map<String, dynamic> pesoIdeal,
+    AppLocalizations loc,
+  ) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.red50,
+        border: pw.Border.all(color: PdfColors.red200, width: 2),
+        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(10)),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Row(
+            children: [
+              pw.Container(
+                width: 30,
+                height: 30,
+                decoration: const pw.BoxDecoration(
+                  shape: pw.BoxShape.circle,
+                  color: PdfColors.red,
+                ),
+                child: pw.Center(
+                  child: pw.Text(
+                    '♥',
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      color: PdfColors.white,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              pw.SizedBox(width: 10),
+              pw.Text(
+                'Rango de Peso Saludable',
+                style: pw.TextStyle(
+                  fontSize: 14,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColors.red800,
+                ),
+              ),
+            ],
+          ),
+          pw.SizedBox(height: 15),
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+            children: [
+              _construirItemPeso(
+                'Mínimo',
+                pesoIdeal['pesoMinimo'],
+                PdfColors.orange,
+              ),
+              _construirItemPeso(
+                'Ideal',
+                pesoIdeal['pesoIdeal'],
+                PdfColors.green,
+              ),
+              _construirItemPeso(
+                'Máximo',
+                pesoIdeal['pesoMaximo'],
+                PdfColors.orange,
+              ),
+            ],
+          ),
+          pw.SizedBox(height: 12),
+          pw.Container(
+            padding: const pw.EdgeInsets.all(10),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.white,
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
+            ),
+            child: pw.Text(
+              pesoIdeal['mensaje'],
+              style: const pw.TextStyle(fontSize: 11),
+              textAlign: pw.TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Construye un item de peso individual
+  static pw.Widget _construirItemPeso(
+    String label,
+    double peso,
+    PdfColor color,
+  ) {
+    return pw.Column(
+      children: [
+        pw.Text(
+          label,
+          style: pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
+        ),
+        pw.SizedBox(height: 4),
+        pw.Text(
+          '${peso.toStringAsFixed(1)} kg',
+          style: pw.TextStyle(
+            fontSize: 13,
+            fontWeight: pw.FontWeight.bold,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Construye la sección del plan nutricional
+  static pw.Widget _construirPlanNutricional(
+    Map<String, dynamic> metasCalorias,
+    Persona persona,
+    AppLocalizations loc,
+  ) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.orange50,
+        border: pw.Border.all(color: PdfColors.orange200, width: 2),
+        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(10)),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Row(
+            children: [
+              pw.Container(
+                width: 30,
+                height: 30,
+                decoration: const pw.BoxDecoration(
+                  shape: pw.BoxShape.circle,
+                  color: PdfColors.orange,
+                ),
+                child: pw.Center(
+                  child: pw.Text(
+                    '🔥',
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              pw.SizedBox(width: 10),
+              pw.Text(
+                'Plan Nutricional Personalizado',
+                style: pw.TextStyle(
+                  fontSize: 14,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColors.orange800,
+                ),
+              ),
+            ],
+          ),
+          pw.SizedBox(height: 12),
+
+          // Información del perfil
+          pw.Container(
+            padding: const pw.EdgeInsets.all(8),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.white,
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
+            ),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  'Perfil: ${persona.edad} años • ${persona.sexo?.name.toUpperCase() ?? ""} • ${persona.nivelActividad?.descripcion ?? ""}',
+                  style: pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
+                ),
+              ],
+            ),
+          ),
+
+          pw.SizedBox(height: 12),
+
+          // TMB y TDEE
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+            children: [
+              _construirItemCaloria(
+                'Metabolismo Basal (TMB)',
+                metasCalorias['tmb'],
+                PdfColors.blue,
+              ),
+              _construirItemCaloria(
+                'Calorías Mantenimiento',
+                metasCalorias['tdee'],
+                PdfColors.purple,
+              ),
+            ],
+          ),
+
+          pw.SizedBox(height: 15),
+
+          // Meta Recomendada (destacada)
+          pw.Container(
+            padding: const pw.EdgeInsets.all(12),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.green,
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(8)),
+            ),
+            child: pw.Column(
+              children: [
+                pw.Text(
+                  '🎯 META RECOMENDADA',
+                  style: pw.TextStyle(
+                    fontSize: 11,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColors.white,
+                  ),
+                ),
+                pw.SizedBox(height: 4),
+                pw.Text(
+                  metasCalorias['recomendacion'],
+                  style: pw.TextStyle(fontSize: 10, color: PdfColors.white),
+                ),
+                pw.SizedBox(height: 8),
+                pw.Text(
+                  '${metasCalorias['metaRecomendada']} cal/día',
+                  style: pw.TextStyle(
+                    fontSize: 20,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColors.white,
+                  ),
+                ),
+                if (metasCalorias['semanasEstimadas'] > 0) ...[
+                  pw.SizedBox(height: 6),
+                  pw.Text(
+                    '⏱️ Alcanzarás tu peso ideal en ~${metasCalorias['semanasEstimadas']} semanas',
+                    style: pw.TextStyle(fontSize: 9, color: PdfColors.white),
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          pw.SizedBox(height: 15),
+
+          // Otras opciones
+          pw.Text(
+            'Otras opciones de calorías:',
+            style: pw.TextStyle(
+              fontSize: 11,
+              fontWeight: pw.FontWeight.bold,
+              color: PdfColors.grey800,
+            ),
+          ),
+          pw.SizedBox(height: 8),
+          _construirOpcionCaloria(
+            '🟢 Mantener peso',
+            metasCalorias['mantenimiento'],
+            null,
+          ),
+          _construirOpcionCaloria(
+            '💚 Perder peso moderado',
+            metasCalorias['perderModerado'],
+            '(-0.5 kg/semana)',
+          ),
+          _construirOpcionCaloria(
+            '💙 Perder peso rápido',
+            metasCalorias['perderRapido'],
+            '(-1 kg/semana)',
+          ),
+          _construirOpcionCaloria(
+            '💛 Ganar peso',
+            metasCalorias['ganarPeso'],
+            '(+0.3 kg/semana)',
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Construye un item de caloría individual
+  static pw.Widget _construirItemCaloria(
+    String label,
+    int calorias,
+    PdfColor color,
+  ) {
+    return pw.Column(
+      children: [
+        pw.Text(
+          label,
+          style: pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
+          textAlign: pw.TextAlign.center,
+        ),
+        pw.SizedBox(height: 4),
+        pw.Text(
+          '$calorias cal',
+          style: pw.TextStyle(
+            fontSize: 12,
+            fontWeight: pw.FontWeight.bold,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Construye una opción de caloría
+  static pw.Widget _construirOpcionCaloria(
+    String label,
+    int calorias,
+    String? detalle,
+  ) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        children: [
+          pw.Expanded(
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(label, style: const pw.TextStyle(fontSize: 10)),
+                if (detalle != null)
+                  pw.Text(
+                    detalle,
+                    style: pw.TextStyle(fontSize: 8, color: PdfColors.grey600),
+                  ),
+              ],
+            ),
+          ),
+          pw.Text(
+            '$calorias cal/día',
+            style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold),
           ),
         ],
       ),

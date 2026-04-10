@@ -156,6 +156,12 @@ class IMCController extends ChangeNotifier {
     }
   }
 
+  /// Actualiza la instancia completa de persona (útil para datos premium)
+  void actualizarPersonaCompleta(Persona nuevaPersona) {
+    _persona = nuevaPersona;
+    notifyListeners();
+  }
+
   /// Obtiene el IMC formateado como string
   String get imcFormateado {
     if (_persona == null) return '0.0';

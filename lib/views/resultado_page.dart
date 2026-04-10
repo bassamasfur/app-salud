@@ -1,12 +1,34 @@
 import 'package:flutter/material.dart';
 import '../controllers/imc_controller.dart';
 import 'pdf_preview_page.dart';
+import 'datos_adicionales_page.dart';
 import '../l10n/app_localizations.dart';
+import '../services/purchase_service.dart';
 
 /// Página que muestra los resultados del cálculo del IMC
 /// Incluye el valor, categoría, recomendaciones y opciones de acción
-class ResultadoPage extends StatelessWidget {
+/// PREMIUM: También muestra peso ideal y plan de calorías
+class ResultadoPage extends StatefulWidget {
   const ResultadoPage({super.key});
+
+  @override
+  State<ResultadoPage> createState() => _ResultadoPageState();
+}
+
+class _ResultadoPageState extends State<ResultadoPage> {
+  final PurchaseService _purchaseService = PurchaseService();
+
+  @override
+  void initState() {
+    super.initState();
+    _purchaseService.initialize();
+  }
+
+  @override
+  void dispose() {
+    _purchaseService.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,6 +191,12 @@ class ResultadoPage extends StatelessWidget {
                           ),
                         ),
                       ),
+
+                      // CONTENIDO PREMIUM: Paywall o features desbloqueadas
+                      if (_purchaseService.hasPurchased)
+                        _buildPremiumContent(loc, persona, isSmallScreen)
+                      else
+                        _buildPaywall(isSmallScreen),
                     ],
                   ),
                 ),
@@ -621,6 +649,527 @@ class ResultadoPage extends StatelessWidget {
   void _mostrarVistaPrevia(BuildContext context, persona) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => PDFPreviewPage(persona: persona)),
+    );
+  }
+
+  // ============================================
+  // MÉTODOS PREMIUM
+  // ============================================
+
+  /// Construye el contenido premium completo
+  Widget _buildPremiumContent(
+    AppLocalizations loc,
+    persona,
+    bool isSmallScreen,
+  ) {
+    // Si faltan datos adicionales, mostrar botón para ir al formulario
+    if (persona.edad == null ||
+        persona.sexo == null ||
+        persona.nivelActividad == null) {
+      return _buildBotonDatosAdicionales(loc, isSmallScreen);
+    }
+
+    final pesoIdeal = persona.calcularPesoIdeal();
+    final metasCalorias = persona.calcularMetasCalorias();
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 20 : 24),
+      child: Column(
+        children: [
+          // Card de Peso Ideal
+          Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                    size: isSmallScreen ? 40 : 48,
+                  ),
+                  SizedBox(height: isSmallScreen ? 8 : 16),
+                  Text(
+                    'Rango de Peso Saludable',
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 18 : 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: isSmallScreen ? 12 : 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildPesoInfo(
+                        'Mínimo',
+                        pesoIdeal['pesoMinimo'],
+                        Colors.orange,
+                        isSmallScreen,
+                      ),
+                      _buildPesoInfo(
+                        'Ideal',
+                        pesoIdeal['pesoIdeal'],
+                        Colors.green,
+                        isSmallScreen,
+                      ),
+                      _buildPesoInfo(
+                        'Máximo',
+                        pesoIdeal['pesoMaximo'],
+                        Colors.orange,
+                        isSmallScreen,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: isSmallScreen ? 12 : 16),
+                  Container(
+                    padding: EdgeInsets.all(isSmallScreen ? 10 : 12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      pesoIdeal['mensaje'],
+                      style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          SizedBox(height: isSmallScreen ? 8 : 12),
+
+          // Card de Plan de Calorías
+          if (metasCalorias != null)
+            Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.local_fire_department,
+                      color: Colors.orange,
+                      size: isSmallScreen ? 40 : 48,
+                    ),
+                    SizedBox(height: isSmallScreen ? 8 : 16),
+                    Text(
+                      'Tu Plan Nutricional',
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 18 : 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: isSmallScreen ? 12 : 16),
+
+                    // TMB y TDEE
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildCaloriaInfo(
+                          'Metabolismo\nBasal',
+                          metasCalorias['tmb'],
+                          Colors.blue,
+                          isSmallScreen,
+                        ),
+                        _buildCaloriaInfo(
+                          'Calorías de\nMantenimiento',
+                          metasCalorias['tdee'],
+                          Colors.purple,
+                          isSmallScreen,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: isSmallScreen ? 16 : 24),
+
+                    // Meta Recomendada
+                    Container(
+                      padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.green.shade400,
+                            Colors.green.shade600,
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            '🎯 META RECOMENDADA',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isSmallScreen ? 14 : 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: isSmallScreen ? 4 : 8),
+                          Text(
+                            metasCalorias['recomendacion'],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isSmallScreen ? 12 : 14,
+                            ),
+                          ),
+                          SizedBox(height: isSmallScreen ? 8 : 12),
+                          Text(
+                            '${metasCalorias['metaRecomendada']} cal/día',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isSmallScreen ? 28 : 32,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (metasCalorias['semanasEstimadas'] > 0) ...[
+                            SizedBox(height: isSmallScreen ? 4 : 8),
+                            Text(
+                              '⏱️ Alcanzarás tu peso ideal en ~${metasCalorias['semanasEstimadas']} semanas',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: isSmallScreen ? 12 : 14,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: isSmallScreen ? 16 : 24),
+
+                    // Otras opciones
+                    Text(
+                      'Otras opciones:',
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 14 : 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    SizedBox(height: isSmallScreen ? 8 : 12),
+                    _buildOpcionCaloria(
+                      '🟢 Mantener peso',
+                      metasCalorias['mantenimiento'],
+                      null,
+                      isSmallScreen,
+                    ),
+                    _buildOpcionCaloria(
+                      '💚 Perder peso moderado',
+                      metasCalorias['perderModerado'],
+                      '(-0.5 kg/semana)',
+                      isSmallScreen,
+                    ),
+                    _buildOpcionCaloria(
+                      '💙 Perder peso rápido',
+                      metasCalorias['perderRapido'],
+                      '(-1 kg/semana)',
+                      isSmallScreen,
+                    ),
+                    _buildOpcionCaloria(
+                      '💛 Ganar peso',
+                      metasCalorias['ganarPeso'],
+                      '(+0.3 kg/semana)',
+                      isSmallScreen,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          SizedBox(height: isSmallScreen ? 12 : 16),
+        ],
+      ),
+    );
+  }
+
+  /// Construye el paywall para usuarios sin premium
+  Widget _buildPaywall(bool isSmallScreen) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: isSmallScreen ? 20 : 24,
+        vertical: isSmallScreen ? 8 : 12,
+      ),
+      child: Card(
+        elevation: 8,
+        color: Colors.amber.shade50,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.amber.shade200, width: 2),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+          child: Column(
+            children: [
+              Icon(
+                Icons.lock,
+                size: isSmallScreen ? 40 : 48,
+                color: Colors.amber.shade700,
+              ),
+              SizedBox(height: isSmallScreen ? 8 : 16),
+              Text(
+                'Desbloquea Plan Completo',
+                style: TextStyle(
+                  fontSize: isSmallScreen ? 18 : 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.amber.shade900,
+                ),
+              ),
+              SizedBox(height: isSmallScreen ? 4 : 8),
+              Text(
+                'Descubre tu peso ideal y plan de calorías personalizado',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey[700],
+                  fontSize: isSmallScreen ? 13 : 14,
+                ),
+              ),
+              SizedBox(height: isSmallScreen ? 16 : 24),
+              _buildFeatureLine(
+                'Peso mínimo, ideal y máximo saludable',
+                isSmallScreen,
+              ),
+              _buildFeatureLine(
+                'Meta de calorías diarias personalizada',
+                isSmallScreen,
+              ),
+              _buildFeatureLine(
+                'Tiempo estimado para alcanzar tu meta',
+                isSmallScreen,
+              ),
+              _buildFeatureLine(
+                'Múltiples escenarios de calorías',
+                isSmallScreen,
+              ),
+              _buildFeatureLine(
+                'Compra única, sin suscripciones',
+                isSmallScreen,
+              ),
+              SizedBox(height: isSmallScreen ? 16 : 24),
+              SizedBox(
+                width: double.infinity,
+                height: isSmallScreen ? 45 : 50,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final success = await _purchaseService.buyProduct();
+                    if (!success && mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('No se pudo procesar la compra'),
+                        ),
+                      );
+                    } else if (mounted) {
+                      setState(() {});
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        isSmallScreen ? 22 : 25,
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    _purchaseService.productDetails != null
+                        ? 'Comprar por ${_purchaseService.productDetails!.price}'
+                        : 'Comprar Premium \$1.99',
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 16 : 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: isSmallScreen ? 8 : 12),
+              TextButton(
+                onPressed: () async {
+                  await _purchaseService.restorePurchases();
+                  if (mounted) setState(() {});
+                },
+                child: Text(
+                  'Restaurar compra',
+                  style: TextStyle(fontSize: isSmallScreen ? 13 : 14),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Construye un botón para navegar al formulario de datos adicionales
+  Widget _buildBotonDatosAdicionales(AppLocalizations loc, bool isSmallScreen) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: isSmallScreen ? 20 : 24,
+        vertical: isSmallScreen ? 8 : 12,
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        height: isSmallScreen ? 50 : 56,
+        child: ElevatedButton.icon(
+          onPressed: () async {
+            final IMCController controller =
+                ModalRoute.of(context)!.settings.arguments as IMCController;
+
+            // Navegar a la página de datos adicionales
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    DatosAdicionalesPage(personaActual: controller.persona!),
+              ),
+            );
+          },
+          icon: const Icon(Icons.person_add, color: Colors.white),
+          label: Text(
+            loc.personalizedProfile,
+            style: TextStyle(
+              fontSize: isSmallScreen ? 16 : 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(28),
+            ),
+            elevation: 4,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Widgets auxiliares
+  Widget _buildPesoInfo(
+    String label,
+    double peso,
+    Color color,
+    bool isSmallScreen,
+  ) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: isSmallScreen ? 12 : 13,
+          ),
+        ),
+        SizedBox(height: 4),
+        Text(
+          '${peso.toStringAsFixed(1)} kg',
+          style: TextStyle(
+            fontSize: isSmallScreen ? 16 : 18,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCaloriaInfo(
+    String label,
+    int calorias,
+    Color color,
+    bool isSmallScreen,
+  ) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: isSmallScreen ? 11 : 12,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 4),
+        Text(
+          '$calorias cal',
+          style: TextStyle(
+            fontSize: isSmallScreen ? 16 : 18,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOpcionCaloria(
+    String label,
+    int calorias,
+    String? detalle,
+    bool isSmallScreen,
+  ) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 3 : 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(fontSize: isSmallScreen ? 12 : 14),
+                ),
+                if (detalle != null)
+                  Text(
+                    detalle,
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 10 : 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Text(
+            '$calorias cal/día',
+            style: TextStyle(
+              fontSize: isSmallScreen ? 12 : 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureLine(String text, bool isSmallScreen) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 4 : 6),
+      child: Row(
+        children: [
+          Icon(
+            Icons.check_circle,
+            color: Colors.green,
+            size: isSmallScreen ? 18 : 20,
+          ),
+          SizedBox(width: isSmallScreen ? 8 : 10),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: isSmallScreen ? 12 : 14),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

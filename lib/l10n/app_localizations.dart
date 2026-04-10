@@ -62,8 +62,7 @@ import 'app_localizations_es.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,18 +82,17 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('es'),
+    Locale('es')
   ];
 
   /// No description provided for @appTitle.
@@ -409,10 +406,219 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Generating preview...'**
   String get generatingPreview;
+
+  /// No description provided for @completeYourProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Your Profile'**
+  String get completeYourProfile;
+
+  /// No description provided for @profileDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'To calculate your ideal weight and personalized calorie plan, we need some additional information'**
+  String get profileDescription;
+
+  /// No description provided for @age.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get age;
+
+  /// No description provided for @yourAgeInYears.
+  ///
+  /// In en, this message translates to:
+  /// **'Your age in years'**
+  String get yourAgeInYears;
+
+  /// No description provided for @years.
+  ///
+  /// In en, this message translates to:
+  /// **'years'**
+  String get years;
+
+  /// No description provided for @sex.
+  ///
+  /// In en, this message translates to:
+  /// **'Sex'**
+  String get sex;
+
+  /// No description provided for @male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get male;
+
+  /// No description provided for @female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get female;
+
+  /// No description provided for @physicalActivityLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Physical Activity Level'**
+  String get physicalActivityLevel;
+
+  /// No description provided for @calculateMyPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate My Plan'**
+  String get calculateMyPlan;
+
+  /// No description provided for @backToResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to results'**
+  String get backToResults;
+
+  /// No description provided for @pleaseEnterAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your age'**
+  String get pleaseEnterAge;
+
+  /// No description provided for @ageRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Age must be between 1 and 120 years'**
+  String get ageRange;
+
+  /// No description provided for @pleaseSelectSex.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select your sex'**
+  String get pleaseSelectSex;
+
+  /// No description provided for @pleaseSelectActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select your activity level'**
+  String get pleaseSelectActivity;
+
+  /// No description provided for @yourPersonalizedPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Personalized Plan'**
+  String get yourPersonalizedPlan;
+
+  /// No description provided for @planGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan Generated!'**
+  String get planGenerated;
+
+  /// No description provided for @personalizedHealthPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'This is your personalized health plan'**
+  String get personalizedHealthPlan;
+
+  /// No description provided for @healthyWeightRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy Weight Range'**
+  String get healthyWeightRange;
+
+  /// No description provided for @minimum.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum'**
+  String get minimum;
+
+  /// No description provided for @ideal.
+  ///
+  /// In en, this message translates to:
+  /// **'Ideal'**
+  String get ideal;
+
+  /// No description provided for @maximum.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum'**
+  String get maximum;
+
+  /// No description provided for @yourNutritionalPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Nutritional Plan'**
+  String get yourNutritionalPlan;
+
+  /// No description provided for @basalMetabolism.
+  ///
+  /// In en, this message translates to:
+  /// **'Basal\nMetabolism'**
+  String get basalMetabolism;
+
+  /// No description provided for @maintenanceCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance\nCalories'**
+  String get maintenanceCalories;
+
+  /// No description provided for @recommendedGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'RECOMMENDED GOAL'**
+  String get recommendedGoal;
+
+  /// No description provided for @weeksToIdealWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll reach your ideal weight in ~{weeks} weeks'**
+  String weeksToIdealWeight(Object weeks);
+
+  /// No description provided for @otherCalorieOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Other calorie options:'**
+  String get otherCalorieOptions;
+
+  /// No description provided for @maintainWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintain weight'**
+  String get maintainWeight;
+
+  /// No description provided for @moderateWeightLoss.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate weight loss'**
+  String get moderateWeightLoss;
+
+  /// No description provided for @rapidWeightLoss.
+  ///
+  /// In en, this message translates to:
+  /// **'Rapid weight loss'**
+  String get rapidWeightLoss;
+
+  /// No description provided for @gainWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Gain weight'**
+  String get gainWeight;
+
+  /// No description provided for @yourProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Profile'**
+  String get yourProfile;
+
+  /// No description provided for @activityLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity Level'**
+  String get activityLevel;
+
+  /// No description provided for @personalizedProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalized Profile'**
+  String get personalizedProfile;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -421,26 +627,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'es'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'es'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'es':
-      return AppLocalizationsEs();
+    case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }
