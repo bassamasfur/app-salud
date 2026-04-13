@@ -287,13 +287,14 @@ class _DatosAdicionalesPageState extends State<DatosAdicionalesPage> {
                               ),
                               prefixIcon: const Icon(Icons.directions_run),
                             ),
+                            // ignore: deprecated_member_use
                             value: _nivelActividad,
                             isExpanded: true,
                             items: NivelActividad.values.map((nivel) {
                               return DropdownMenuItem(
                                 value: nivel,
                                 child: Text(
-                                  nivel.descripcion,
+                                  _getNivelActividadTexto(nivel, loc),
                                   style: TextStyle(
                                     fontSize: isSmallScreen ? 13 : 14,
                                   ),
@@ -389,5 +390,21 @@ class _DatosAdicionalesPageState extends State<DatosAdicionalesPage> {
         ),
       ),
     );
+  }
+
+  /// Obtiene el texto traducido para un nivel de actividad
+  String _getNivelActividadTexto(NivelActividad nivel, AppLocalizations loc) {
+    switch (nivel) {
+      case NivelActividad.sedentario:
+        return loc.sedentaryActivity;
+      case NivelActividad.ligero:
+        return loc.lightActivity;
+      case NivelActividad.moderado:
+        return loc.moderateActivity;
+      case NivelActividad.activo:
+        return loc.activeActivity;
+      case NivelActividad.muyActivo:
+        return loc.veryActiveActivity;
+    }
   }
 }

@@ -17,7 +17,7 @@ class PlanPersonalizadoPage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final isSmallScreen = screenHeight < 700;
     final pesoIdeal = persona.calcularPesoIdeal();
-    final metasCalorias = persona.calcularMetasCalorias();
+    final metasCalorias = persona.calcularMetasCalorias(loc);
 
     // Verificar que tengamos los datos necesarios para las calorías
     if (metasCalorias == null) {
@@ -377,7 +377,7 @@ class PlanPersonalizadoPage extends StatelessWidget {
                   ),
                   SizedBox(height: isSmallScreen ? 12 : 16),
                   Text(
-                    '${metasCalorias['metaRecomendada']} cal/día',
+                    '${metasCalorias['metaRecomendada']} ${loc.calPerDay}',
                     style: TextStyle(
                       fontSize: isSmallScreen ? 32 : 36,
                       fontWeight: FontWeight.bold,
@@ -392,7 +392,7 @@ class PlanPersonalizadoPage extends StatelessWidget {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
@@ -452,24 +452,28 @@ class PlanPersonalizadoPage extends StatelessWidget {
                     metasCalorias['mantenimiento'],
                     null,
                     isSmallScreen,
+                    loc,
                   ),
                   _buildOpcionCaloria(
                     '💚 ${loc.moderateWeightLoss}',
                     metasCalorias['perderModerado'],
-                    '(-0.5 kg/semana)',
+                    loc.weeklyChangeModerate,
                     isSmallScreen,
+                    loc,
                   ),
                   _buildOpcionCaloria(
                     '💙 ${loc.rapidWeightLoss}',
                     metasCalorias['perderRapido'],
-                    '(-1 kg/semana)',
+                    loc.weeklyChangeRapid,
                     isSmallScreen,
+                    loc,
                   ),
                   _buildOpcionCaloria(
                     '💛 ${loc.gainWeight}',
                     metasCalorias['ganarPeso'],
-                    '(+0.3 kg/semana)',
+                    loc.weeklyChangeGain,
                     isSmallScreen,
+                    loc,
                   ),
                 ],
               ),
@@ -490,9 +494,9 @@ class PlanPersonalizadoPage extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3), width: 2),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 2),
       ),
       child: Column(
         children: [
@@ -526,6 +530,7 @@ class PlanPersonalizadoPage extends StatelessWidget {
     int calorias,
     String? detalle,
     bool isSmallScreen,
+    AppLocalizations loc,
   ) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 4 : 6),
@@ -555,7 +560,7 @@ class PlanPersonalizadoPage extends StatelessWidget {
             ),
           ),
           Text(
-            '$calorias cal/día',
+            '$calorias ${loc.calPerDay}',
             style: TextStyle(
               fontSize: isSmallScreen ? 13 : 14,
               fontWeight: FontWeight.bold,
@@ -597,20 +602,20 @@ class PlanPersonalizadoPage extends StatelessWidget {
             ),
             SizedBox(height: isSmallScreen ? 10 : 12),
             _buildDatoPersonal(
-              '${loc.age}',
+              loc.age,
               '${persona.edad} ${loc.years}',
               Icons.cake,
               isSmallScreen,
             ),
             _buildDatoPersonal(
-              '${loc.sex}',
+              loc.sex,
               persona.sexo!.name == 'hombre' ? loc.male : loc.female,
               persona.sexo!.name == 'hombre' ? Icons.male : Icons.female,
               isSmallScreen,
             ),
             _buildDatoPersonal(
-              '${loc.activityLevel}',
-              persona.nivelActividad!.descripcion,
+              loc.activityLevel,
+              _getNivelActividadTexto(persona.nivelActividad!, loc),
               Icons.directions_run,
               isSmallScreen,
             ),
@@ -726,5 +731,21 @@ class PlanPersonalizadoPage extends StatelessWidget {
       context,
       MaterialPageRoute(builder: (context) => PDFPreviewPage(persona: persona)),
     );
+  }
+
+  /// Obtiene el texto traducido para un nivel de actividad
+  String _getNivelActividadTexto(NivelActividad nivel, AppLocalizations loc) {
+    switch (nivel) {
+      case NivelActividad.sedentario:
+        return loc.sedentaryActivity;
+      case NivelActividad.ligero:
+        return loc.lightActivity;
+      case NivelActividad.moderado:
+        return loc.moderateActivity;
+      case NivelActividad.activo:
+        return loc.activeActivity;
+      case NivelActividad.muyActivo:
+        return loc.veryActiveActivity;
+    }
   }
 }

@@ -93,5 +93,19 @@
     "gainWeight": "Gain weight",
     "yourProfile": "Your Profile",
     "activityLevel": "Activity Level",
-    "personalizedProfile": "Personalized Profile"
+    "personalizedProfile": "Personalized Profile",
+    "sedentaryActivity": "Sedentary (little or no exercise)",
+    "lightActivity": "Light (exercise 1-3 days/week)",
+    "moderateActivity": "Moderate (exercise 3-5 days/week)",
+    "activeActivity": "Active (exercise 6-7 days/week)",
+    "veryActiveActivity": "Very Active (intense daily exercise)",
+    "personalizedHealthPlanTitle": "Personalized Health Plan",
+    "personalizedNutritionalPlan": "Personalized Nutritional Plan",
+    "profile": "Profile:",
+    "basalMetabolismTMB": "Basal Metabolism (BMR)",
+    "maintenanceCaloriesFull": "Maintenance Calories",
+    "weeklyChangeModerate": "(-0.5 kg/week)",
+    "weeklyChangeRapid": "(-1 kg/week)",
+    "weeklyChangeGain": "(+0.3 kg/week)",
+    "calPerDay": "cal/day"
   }

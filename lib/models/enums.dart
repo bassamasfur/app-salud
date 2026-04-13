@@ -1,5 +1,3 @@
-/// Enumeraciones para datos adicionales del usuario
-
 /// Sexo del usuario (necesario para calcular calorías)
 enum Sexo { hombre, mujer }
 

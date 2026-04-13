@@ -63,7 +63,7 @@ class PDFService {
 
     if (tieneDatosPremium) {
       pesoIdeal = persona.calcularPesoIdeal();
-      metasCalorias = persona.calcularMetasCalorias();
+      metasCalorias = persona.calcularMetasCalorias(loc);
     }
 
     // Crear las páginas del PDF
@@ -100,7 +100,7 @@ class PDFService {
             pw.SizedBox(height: 30),
             _construirDivisor(),
             pw.SizedBox(height: 20),
-            _construirTituloPremium(),
+            _construirTituloPremium(loc),
             pw.SizedBox(height: 20),
             _construirPesoIdeal(pesoIdeal!, loc),
             pw.SizedBox(height: 20),
@@ -493,10 +493,10 @@ class PDFService {
   }
 
   /// Título de la sección premium
-  static pw.Widget _construirTituloPremium() {
+  static pw.Widget _construirTituloPremium(AppLocalizations loc) {
     return pw.Center(
       child: pw.Text(
-        'Plan Personalizado de Salud',
+        loc.personalizedHealthPlanTitle,
         style: pw.TextStyle(
           fontSize: 16,
           fontWeight: pw.FontWeight.bold,
@@ -543,7 +543,7 @@ class PDFService {
               ),
               pw.SizedBox(width: 10),
               pw.Text(
-                'Rango de Peso Saludable',
+                loc.healthyWeightRange,
                 style: pw.TextStyle(
                   fontSize: 14,
                   fontWeight: pw.FontWeight.bold,
@@ -557,17 +557,17 @@ class PDFService {
             mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
             children: [
               _construirItemPeso(
-                'Mínimo',
+                loc.minimum,
                 pesoIdeal['pesoMinimo'],
                 PdfColors.orange,
               ),
               _construirItemPeso(
-                'Ideal',
+                loc.ideal,
                 pesoIdeal['pesoIdeal'],
                 PdfColors.green,
               ),
               _construirItemPeso(
-                'Máximo',
+                loc.maximum,
                 pesoIdeal['pesoMaximo'],
                 PdfColors.orange,
               ),
@@ -653,7 +653,7 @@ class PDFService {
               ),
               pw.SizedBox(width: 10),
               pw.Text(
-                'Plan Nutricional Personalizado',
+                loc.personalizedNutritionalPlan,
                 style: pw.TextStyle(
                   fontSize: 14,
                   fontWeight: pw.FontWeight.bold,
@@ -675,7 +675,7 @@ class PDFService {
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 pw.Text(
-                  'Perfil: ${persona.edad} años • ${persona.sexo?.name.toUpperCase() ?? ""} • ${persona.nivelActividad?.descripcion ?? ""}',
+                  '${loc.profile} ${persona.edad} ${loc.years} • ${_getSexoTexto(persona.sexo!, loc)} • ${_getNivelActividadTexto(persona.nivelActividad!, loc)}',
                   style: pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
                 ),
               ],
@@ -689,12 +689,12 @@ class PDFService {
             mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
             children: [
               _construirItemCaloria(
-                'Metabolismo Basal (TMB)',
+                loc.basalMetabolismTMB,
                 metasCalorias['tmb'],
                 PdfColors.blue,
               ),
               _construirItemCaloria(
-                'Calorías Mantenimiento',
+                loc.maintenanceCaloriesFull,
                 metasCalorias['tdee'],
                 PdfColors.purple,
               ),
@@ -713,7 +713,7 @@ class PDFService {
             child: pw.Column(
               children: [
                 pw.Text(
-                  '🎯 META RECOMENDADA',
+                  '🎯 ${loc.recommendedGoal}',
                   style: pw.TextStyle(
                     fontSize: 11,
                     fontWeight: pw.FontWeight.bold,
@@ -727,7 +727,7 @@ class PDFService {
                 ),
                 pw.SizedBox(height: 8),
                 pw.Text(
-                  '${metasCalorias['metaRecomendada']} cal/día',
+                  '${metasCalorias['metaRecomendada']} ${loc.calPerDay}',
                   style: pw.TextStyle(
                     fontSize: 20,
                     fontWeight: pw.FontWeight.bold,
@@ -737,7 +737,7 @@ class PDFService {
                 if (metasCalorias['semanasEstimadas'] > 0) ...[
                   pw.SizedBox(height: 6),
                   pw.Text(
-                    '⏱️ Alcanzarás tu peso ideal en ~${metasCalorias['semanasEstimadas']} semanas',
+                    '⏱️ ${loc.weeksToIdealWeight(metasCalorias['semanasEstimadas'])}',
                     style: pw.TextStyle(fontSize: 9, color: PdfColors.white),
                   ),
                 ],
@@ -749,7 +749,7 @@ class PDFService {
 
           // Otras opciones
           pw.Text(
-            'Otras opciones de calorías:',
+            loc.otherCalorieOptions,
             style: pw.TextStyle(
               fontSize: 11,
               fontWeight: pw.FontWeight.bold,
@@ -758,24 +758,28 @@ class PDFService {
           ),
           pw.SizedBox(height: 8),
           _construirOpcionCaloria(
-            '🟢 Mantener peso',
+            '🟢 ${loc.maintainWeight}',
             metasCalorias['mantenimiento'],
             null,
+            loc,
           ),
           _construirOpcionCaloria(
-            '💚 Perder peso moderado',
+            '💚 ${loc.moderateWeightLoss}',
             metasCalorias['perderModerado'],
-            '(-0.5 kg/semana)',
+            loc.weeklyChangeModerate,
+            loc,
           ),
           _construirOpcionCaloria(
-            '💙 Perder peso rápido',
+            '💙 ${loc.rapidWeightLoss}',
             metasCalorias['perderRapido'],
-            '(-1 kg/semana)',
+            loc.weeklyChangeRapid,
+            loc,
           ),
           _construirOpcionCaloria(
-            '💛 Ganar peso',
+            '💛 ${loc.gainWeight}',
             metasCalorias['ganarPeso'],
-            '(+0.3 kg/semana)',
+            loc.weeklyChangeGain,
+            loc,
           ),
         ],
       ),
@@ -813,6 +817,7 @@ class PDFService {
     String label,
     int calorias,
     String? detalle,
+    AppLocalizations loc,
   ) {
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(vertical: 3),
@@ -833,7 +838,7 @@ class PDFService {
             ),
           ),
           pw.Text(
-            '$calorias cal/día',
+            '$calorias ${loc.calPerDay}',
             style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold),
           ),
         ],
@@ -919,6 +924,35 @@ class PDFService {
         return PdfColors.red;
       default:
         return PdfColors.grey;
+    }
+  }
+
+  /// Obtiene el texto traducido para el sexo
+  static String _getSexoTexto(Sexo sexo, AppLocalizations loc) {
+    switch (sexo) {
+      case Sexo.hombre:
+        return loc.male;
+      case Sexo.mujer:
+        return loc.female;
+    }
+  }
+
+  /// Obtiene el texto traducido para un nivel de actividad
+  static String _getNivelActividadTexto(
+    NivelActividad nivel,
+    AppLocalizations loc,
+  ) {
+    switch (nivel) {
+      case NivelActividad.sedentario:
+        return loc.sedentaryActivity;
+      case NivelActividad.ligero:
+        return loc.lightActivity;
+      case NivelActividad.moderado:
+        return loc.moderateActivity;
+      case NivelActividad.activo:
+        return loc.activeActivity;
+      case NivelActividad.muyActivo:
+        return loc.veryActiveActivity;
     }
   }
 }

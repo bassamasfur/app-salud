@@ -93,5 +93,19 @@
     "gainWeight": "Ganar peso",
     "yourProfile": "Tu Perfil",
     "activityLevel": "Nivel de Actividad",
-    "personalizedProfile": "Perfil Personalizado"
+    "personalizedProfile": "Perfil Personalizado",
+    "sedentaryActivity": "Sedentario (poco o nada de ejercicio)",
+    "lightActivity": "Ligero (ejercicio 1-3 días/semana)",
+    "moderateActivity": "Moderado (ejercicio 3-5 días/semana)",
+    "activeActivity": "Activo (ejercicio 6-7 días/semana)",
+    "veryActiveActivity": "Muy Activo (ejercicio intenso diario)",
+    "personalizedHealthPlanTitle": "Plan Personalizado de Salud",
+    "personalizedNutritionalPlan": "Plan Nutricional Personalizado",
+    "profile": "Perfil:",
+    "basalMetabolismTMB": "Metabolismo Basal (TMB)",
+    "maintenanceCaloriesFull": "Calorías Mantenimiento",
+    "weeklyChangeModerate": "(-0.5 kg/semana)",
+    "weeklyChangeRapid": "(-1 kg/semana)",
+    "weeklyChangeGain": "(+0.3 kg/semana)",
+    "calPerDay": "cal/día"
   }

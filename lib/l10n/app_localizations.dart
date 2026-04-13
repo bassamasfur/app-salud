@@ -616,6 +616,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Personalized Profile'**
   String get personalizedProfile;
+
+  /// No description provided for @sedentaryActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Sedentary (little or no exercise)'**
+  String get sedentaryActivity;
+
+  /// No description provided for @lightActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Light (exercise 1-3 days/week)'**
+  String get lightActivity;
+
+  /// No description provided for @moderateActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate (exercise 3-5 days/week)'**
+  String get moderateActivity;
+
+  /// No description provided for @activeActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Active (exercise 6-7 days/week)'**
+  String get activeActivity;
+
+  /// No description provided for @veryActiveActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Very Active (intense daily exercise)'**
+  String get veryActiveActivity;
+
+  /// No description provided for @personalizedHealthPlanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalized Health Plan'**
+  String get personalizedHealthPlanTitle;
+
+  /// No description provided for @personalizedNutritionalPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalized Nutritional Plan'**
+  String get personalizedNutritionalPlan;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile:'**
+  String get profile;
+
+  /// No description provided for @basalMetabolismTMB.
+  ///
+  /// In en, this message translates to:
+  /// **'Basal Metabolism (BMR)'**
+  String get basalMetabolismTMB;
+
+  /// No description provided for @maintenanceCaloriesFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance Calories'**
+  String get maintenanceCaloriesFull;
+
+  /// No description provided for @weeklyChangeModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'(-0.5 kg/week)'**
+  String get weeklyChangeModerate;
+
+  /// No description provided for @weeklyChangeRapid.
+  ///
+  /// In en, this message translates to:
+  /// **'(-1 kg/week)'**
+  String get weeklyChangeRapid;
+
+  /// No description provided for @weeklyChangeGain.
+  ///
+  /// In en, this message translates to:
+  /// **'(+0.3 kg/week)'**
+  String get weeklyChangeGain;
+
+  /// No description provided for @calPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'cal/day'**
+  String get calPerDay;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

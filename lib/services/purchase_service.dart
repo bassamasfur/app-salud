@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/app_config.dart';
 
 /// Servicio para manejar las compras dentro de la aplicación (IAP)
-/// En modo desarrollo (DEV_MODE = true), simula que el usuario tiene premium
+/// En modo desarrollo (devMode = true), simula que el usuario tiene premium
 class PurchaseService {
   final InAppPurchase _iap = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
@@ -14,7 +15,7 @@ class PurchaseService {
   bool _hasPurchased = false;
   bool get hasPurchased {
     // En modo desarrollo, siempre retorna true para probar
-    if (DEV_MODE) return true;
+    if (devMode) return true;
     return _hasPurchased;
   }
 
@@ -24,9 +25,11 @@ class PurchaseService {
   /// Inicializa el servicio de compras
   Future<void> initialize() async {
     // En modo desarrollo, marcar como comprado y salir
-    if (DEV_MODE) {
+    if (devMode) {
       _hasPurchased = true;
-      print('🔓 DEV_MODE: Premium desbloqueado automáticamente');
+      if (kDebugMode) {
+        print('🔓 devMode: Premium desbloqueado automáticamente');
+      }
       return;
     }
 
@@ -37,28 +40,38 @@ class PurchaseService {
     // Verificar disponibilidad de IAP
     final available = await _iap.isAvailable();
     if (!available) {
-      print('❌ IAP no disponible en este dispositivo');
+      if (kDebugMode) {
+        print('❌ IAP no disponible en este dispositivo');
+      }
       return;
     }
 
     // Cargar detalles del producto
-    const Set<String> ids = {PRODUCT_ID_PREMIUM};
+    const Set<String> ids = {productIdPremium};
     final ProductDetailsResponse response = await _iap.queryProductDetails(ids);
 
     if (response.productDetails.isNotEmpty) {
       _productDetails = response.productDetails.first;
-      print(
-        '✅ Producto cargado: ${_productDetails!.title} - ${_productDetails!.price}',
-      );
+      if (kDebugMode) {
+        print(
+          '✅ Producto cargado: ${_productDetails!.title} - ${_productDetails!.price}',
+        );
+      }
     } else {
-      print('⚠️ Producto no encontrado en Google Play');
+      if (kDebugMode) {
+        print('⚠️ Producto no encontrado en Google Play');
+      }
     }
 
     // Escuchar cambios de compra
     _subscription = _iap.purchaseStream.listen(
       _onPurchaseUpdate,
       onDone: () => _subscription?.cancel(),
-      onError: (error) => print('❌ Error en purchase stream: $error'),
+      onError: (error) {
+        if (kDebugMode) {
+          print('❌ Error en purchase stream: $error');
+        }
+      },
     );
 
     // Restaurar compras pendientes
@@ -72,11 +85,17 @@ class PurchaseService {
           purchase.status == PurchaseStatus.restored) {
         await _savePurchase();
         _hasPurchased = true;
-        print('✅ Compra exitosa o restaurada');
+        if (kDebugMode) {
+          print('✅ Compra exitosa o restaurada');
+        }
       } else if (purchase.status == PurchaseStatus.error) {
-        print('❌ Error en compra: ${purchase.error}');
+        if (kDebugMode) {
+          print('❌ Error en compra: ${purchase.error}');
+        }
       } else if (purchase.status == PurchaseStatus.pending) {
-        print('⏳ Compra pendiente...');
+        if (kDebugMode) {
+          print('⏳ Compra pendiente...');
+        }
       }
 
       if (purchase.pendingCompletePurchase) {
@@ -93,14 +112,18 @@ class PurchaseService {
 
   /// Inicia el proceso de compra del producto premium
   Future<bool> buyProduct() async {
-    if (DEV_MODE) {
-      print('🔓 DEV_MODE: Simulando compra exitosa');
+    if (devMode) {
+      if (kDebugMode) {
+        print('🔓 devMode: Simulando compra exitosa');
+      }
       _hasPurchased = true;
       return true;
     }
 
     if (_productDetails == null) {
-      print('❌ No hay detalles del producto disponibles');
+      if (kDebugMode) {
+        print('❌ No hay detalles del producto disponibles');
+      }
       return false;
     }
 
@@ -112,23 +135,31 @@ class PurchaseService {
       final success = await _iap.buyNonConsumable(purchaseParam: purchaseParam);
       return success;
     } catch (e) {
-      print('❌ Error al iniciar compra: $e');
+      if (kDebugMode) {
+        print('❌ Error al iniciar compra: $e');
+      }
       return false;
     }
   }
 
   /// Restaura compras anteriores del usuario
   Future<void> restorePurchases() async {
-    if (DEV_MODE) {
-      print('🔓 DEV_MODE: Premium ya desbloqueado');
+    if (devMode) {
+      if (kDebugMode) {
+        print('🔓 devMode: Premium ya desbloqueado');
+      }
       return;
     }
 
     try {
       await _iap.restorePurchases();
-      print('🔄 Restaurando compras...');
+      if (kDebugMode) {
+        print('🔄 Restaurando compras...');
+      }
     } catch (e) {
-      print('❌ Error al restaurar compras: $e');
+      if (kDebugMode) {
+        print('❌ Error al restaurar compras: $e');
+      }
     }
   }
 

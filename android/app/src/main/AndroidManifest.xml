@@ -1,8 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Permisos necesarios -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="com.android.vending.BILLING"/>
     
     <application
-        android:label="app_imc"
+        android:label="IMC Salud"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <!-- AdMob App ID eliminado -->

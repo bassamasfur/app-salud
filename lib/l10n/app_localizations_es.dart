@@ -278,4 +278,46 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get personalizedProfile => 'Perfil Personalizado';
+
+  @override
+  String get sedentaryActivity => 'Sedentario (poco o nada de ejercicio)';
+
+  @override
+  String get lightActivity => 'Ligero (ejercicio 1-3 días/semana)';
+
+  @override
+  String get moderateActivity => 'Moderado (ejercicio 3-5 días/semana)';
+
+  @override
+  String get activeActivity => 'Activo (ejercicio 6-7 días/semana)';
+
+  @override
+  String get veryActiveActivity => 'Muy Activo (ejercicio intenso diario)';
+
+  @override
+  String get personalizedHealthPlanTitle => 'Plan Personalizado de Salud';
+
+  @override
+  String get personalizedNutritionalPlan => 'Plan Nutricional Personalizado';
+
+  @override
+  String get profile => 'Perfil:';
+
+  @override
+  String get basalMetabolismTMB => 'Metabolismo Basal (TMB)';
+
+  @override
+  String get maintenanceCaloriesFull => 'Calorías Mantenimiento';
+
+  @override
+  String get weeklyChangeModerate => '(-0.5 kg/semana)';
+
+  @override
+  String get weeklyChangeRapid => '(-1 kg/semana)';
+
+  @override
+  String get weeklyChangeGain => '(+0.3 kg/semana)';
+
+  @override
+  String get calPerDay => 'cal/día';
 }

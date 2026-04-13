@@ -1,3 +1,4 @@
+import '../l10n/app_localizations.dart';
 import 'enums.dart';
 
 /// Modelo que representa una persona con sus datos para calcular el IMC
@@ -43,7 +44,9 @@ class Persona {
   double get peso => _peso;
   double get altura => _altura;
   int? get edad => _edad;
+  // ignore: unnecessary_getters_setters
   Sexo? get sexo => _sexo;
+  // ignore: unnecessary_getters_setters
   NivelActividad? get nivelActividad => _nivelActividad;
 
   // Setters con validación
@@ -202,7 +205,7 @@ class Persona {
   /// PREMIUM: Calcula metas de calorías personalizadas
   /// Retorna un Map con todas las opciones de calorías y recomendación
   /// Retorna null si no se pueden calcular las calorías (faltan datos)
-  Map<String, dynamic>? calcularMetasCalorias() {
+  Map<String, dynamic>? calcularMetasCalorias(AppLocalizations loc) {
     final tdee = calcularTDEE();
     final pesoIdealData = calcularPesoIdeal();
 
@@ -225,17 +228,17 @@ class Persona {
     if (diferenciaPeso > 2) {
       // Necesita perder peso
       metaRecomendada = perderModerado;
-      recomendacion = 'Perder peso moderado';
+      recomendacion = loc.moderateWeightLoss;
       semanasEstimadas = (diferenciaPeso / 0.5).ceil();
     } else if (diferenciaPeso < -2) {
       // Necesita ganar peso
       metaRecomendada = ganarPeso;
-      recomendacion = 'Ganar peso saludable';
+      recomendacion = loc.gainWeight;
       semanasEstimadas = (diferenciaPeso.abs() / 0.3).ceil();
     } else {
       // Está cerca del peso ideal
       metaRecomendada = mantenimiento;
-      recomendacion = 'Mantener peso actual';
+      recomendacion = loc.maintainWeight;
       semanasEstimadas = 0;
     }
 

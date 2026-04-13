@@ -670,7 +670,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
     }
 
     final pesoIdeal = persona.calcularPesoIdeal();
-    final metasCalorias = persona.calcularMetasCalorias();
+    final metasCalorias = persona.calcularMetasCalorias(loc);
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 20 : 24),
@@ -855,28 +855,32 @@ class _ResultadoPageState extends State<ResultadoPage> {
                     ),
                     SizedBox(height: isSmallScreen ? 8 : 12),
                     _buildOpcionCaloria(
-                      '🟢 Mantener peso',
+                      '🟢 ${loc.maintainWeight}',
                       metasCalorias['mantenimiento'],
                       null,
                       isSmallScreen,
+                      loc,
                     ),
                     _buildOpcionCaloria(
-                      '💚 Perder peso moderado',
+                      '💚 ${loc.moderateWeightLoss}',
                       metasCalorias['perderModerado'],
-                      '(-0.5 kg/semana)',
+                      loc.weeklyChangeModerate,
                       isSmallScreen,
+                      loc,
                     ),
                     _buildOpcionCaloria(
-                      '💙 Perder peso rápido',
+                      '💙 ${loc.rapidWeightLoss}',
                       metasCalorias['perderRapido'],
-                      '(-1 kg/semana)',
+                      loc.weeklyChangeRapid,
                       isSmallScreen,
+                      loc,
                     ),
                     _buildOpcionCaloria(
-                      '💛 Ganar peso',
+                      '💛 ${loc.gainWeight}',
                       metasCalorias['ganarPeso'],
-                      '(+0.3 kg/semana)',
+                      loc.weeklyChangeGain,
                       isSmallScreen,
+                      loc,
                     ),
                   ],
                 ),
@@ -1114,6 +1118,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
     int calorias,
     String? detalle,
     bool isSmallScreen,
+    AppLocalizations loc,
   ) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 3 : 4),
@@ -1140,7 +1145,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
             ),
           ),
           Text(
-            '$calorias cal/día',
+            '$calorias ${loc.calPerDay}',
             style: TextStyle(
               fontSize: isSmallScreen ? 12 : 14,
               fontWeight: FontWeight.bold,
