@@ -5,6 +5,7 @@ import 'views/splash_page.dart';
 import 'views/bienvenida_page.dart';
 import 'views/formulario_page.dart';
 import 'views/resultado_page.dart';
+import 'views/historial_page.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
@@ -102,6 +103,7 @@ class _IMCAppState extends State<IMCApp> {
             BienvenidaPage(setLocale: setLocale, currentLocale: _locale),
         '/formulario': (context) => const FormularioPage(),
         '/resultado': (context) => const ResultadoPage(),
+        '/historial': (context) => const HistorialPage(),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(

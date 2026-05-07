@@ -320,4 +320,107 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get calPerDay => 'cal/día';
+
+  @override
+  String get unlockFullPlan => 'Desbloquea Plan Completo';
+
+  @override
+  String get discoverIdealWeight => 'Descubre tu peso ideal y plan de calorías personalizado';
+
+  @override
+  String get featureMinMaxWeight => 'Peso mínimo, ideal y máximo saludable';
+
+  @override
+  String get featureDailyCalories => 'Meta de calorías diarias personalizada';
+
+  @override
+  String get featureTimeToGoal => 'Tiempo estimado para alcanzar tu meta';
+
+  @override
+  String get featureMultipleScenarios => 'Múltiples escenarios de calorías';
+
+  @override
+  String get featureOneTimePurchase => 'Compra única, sin suscripciones';
+
+  @override
+  String oneTimePayment(Object price) {
+    return 'Pago único $price';
+  }
+
+  @override
+  String get restorePurchase => 'Restaurar compra';
+
+  @override
+  String get purchaseError => 'No se pudo procesar la compra';
+
+  @override
+  String get historyTitle => 'Historial';
+
+  @override
+  String get viewHistory => 'Ver Historial';
+
+  @override
+  String get clearHistory => 'Limpiar Historial';
+
+  @override
+  String get noMeasurements => 'Sin Mediciones';
+
+  @override
+  String get noMeasurementsDesc => 'Aún no has guardado ninguna medición. Calcula tu IMC y guarda el resultado para hacer seguimiento de tu progreso.';
+
+  @override
+  String get addMeasurement => 'Agregar Medición';
+
+  @override
+  String totalMeasurements(Object count, Object limit) {
+    return '$count de $limit mediciones';
+  }
+
+  @override
+  String get limitReached => 'Has alcanzado el límite. Actualiza a Premium para guardar más.';
+
+  @override
+  String get getPremium => 'Obtener Premium';
+
+  @override
+  String get saveMeasurement => 'Guardar Medición';
+
+  @override
+  String get measurementSaved => 'Medición guardada exitosamente';
+
+  @override
+  String get errorSavingMeasurement => 'Error al guardar la medición';
+
+  @override
+  String get deleteConfirmTitle => '¿Eliminar medición?';
+
+  @override
+  String get deleteConfirmMessage => 'Esta acción no se puede deshacer.';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get delete => 'Eliminar';
+
+  @override
+  String get measurementDeleted => 'Medición eliminada';
+
+  @override
+  String get clearHistoryTitle => '¿Limpiar historial?';
+
+  @override
+  String get clearHistoryMessage => 'Esto eliminará todas las mediciones guardadas. Esta acción no se puede deshacer.';
+
+  @override
+  String get clearAll => 'Eliminar Todo';
+
+  @override
+  String get historyCleared => 'Historial limpiado';
+
+  @override
+  String get measurementDetails => 'Detalles de la Medición';
+
+  @override
+  String get close => 'Cerrar';
 }

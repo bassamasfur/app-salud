@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 // ...import eliminado: google_mobile_ads...
 import '../l10n/app_localizations.dart';
+import '../services/storage_service.dart';
 
 /// Página de bienvenida de la aplicación IMC
 /// Primera pantalla que ve el usuario con información sobre la app
-class BienvenidaPage extends StatelessWidget {
+class BienvenidaPage extends StatefulWidget {
   final void Function(Locale locale) setLocale;
   final Locale? currentLocale;
 
@@ -13,6 +14,35 @@ class BienvenidaPage extends StatelessWidget {
     required this.setLocale,
     required this.currentLocale,
   });
+
+  @override
+  State<BienvenidaPage> createState() => _BienvenidaPageState();
+}
+
+class _BienvenidaPageState extends State<BienvenidaPage> {
+  int _numMediciones = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarNumeroMediciones();
+  }
+
+  Future<void> _cargarNumeroMediciones() async {
+    final count = await StorageService.contarMediciones();
+    if (mounted) {
+      setState(() {
+        _numMediciones = count;
+      });
+    }
+  }
+
+  Future<void> _navegarAHistorial() async {
+    // Navegar y esperar a que vuelva
+    await Navigator.pushNamed(context, '/historial');
+    // Recargar el contador cuando vuelve
+    _cargarNumeroMediciones();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +57,7 @@ class BienvenidaPage extends StatelessWidget {
 
     final isWideScreen = screenWidth > 400;
     String lang =
-        (currentLocale?.languageCode ??
+        (widget.currentLocale?.languageCode ??
         Localizations.localeOf(context).languageCode);
     final loc = AppLocalizations.of(context)!;
 
@@ -42,7 +72,7 @@ class BienvenidaPage extends StatelessWidget {
               icon: Icon(Icons.language),
               label: Text(lang == 'es' ? 'ES' : 'EN'),
               onPressed: () {
-                setLocale(
+                widget.setLocale(
                   lang == 'es' ? const Locale('en') : const Locale('es'),
                 );
               },
@@ -304,6 +334,59 @@ class BienvenidaPage extends StatelessWidget {
                         ),
                         child: Text(
                           loc.calculateImc,
+                          style: TextStyle(
+                            fontSize: isTinyScreen
+                                ? 14
+                                : (isSmallScreen ? 15 : 16),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: isTinyScreen ? 6 : (isSmallScreen ? 8 : 12),
+                    ),
+
+                    // Botón de historial - siempre visible
+                    SizedBox(
+                      width: double.infinity,
+                      height: isTinyScreen ? 42 : (isSmallScreen ? 45 : 50),
+                      child: ElevatedButton.icon(
+                        onPressed: _numMediciones > 0
+                            ? _navegarAHistorial
+                            : null, // Deshabilitado si no hay mediciones
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _numMediciones > 0
+                              ? Colors.white.withValues(alpha: 0.2)
+                              : Colors.white.withValues(alpha: 0.1),
+                          foregroundColor: _numMediciones > 0
+                              ? Colors.white
+                              : Colors.white.withValues(alpha: 0.5),
+                          elevation: _numMediciones > 0 ? 2 : 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              isTinyScreen ? 21 : (isSmallScreen ? 22 : 25),
+                            ),
+                            side: BorderSide(
+                              color: _numMediciones > 0
+                                  ? Colors.white
+                                  : Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                        icon: _numMediciones > 0
+                            ? Badge(
+                                label: Text('$_numMediciones'),
+                                child: Icon(
+                                  Icons.history,
+                                  size: isTinyScreen ? 18 : 20,
+                                ),
+                              )
+                            : Icon(Icons.history, size: isTinyScreen ? 18 : 20),
+                        label: Text(
+                          loc.viewHistory,
                           style: TextStyle(
                             fontSize: isTinyScreen
                                 ? 14

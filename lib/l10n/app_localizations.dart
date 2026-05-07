@@ -700,6 +700,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'cal/day'**
   String get calPerDay;
+
+  /// No description provided for @unlockFullPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Complete Plan'**
+  String get unlockFullPlan;
+
+  /// No description provided for @discoverIdealWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover your ideal weight and personalized calorie plan'**
+  String get discoverIdealWeight;
+
+  /// No description provided for @featureMinMaxWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum, ideal, and maximum healthy weight'**
+  String get featureMinMaxWeight;
+
+  /// No description provided for @featureDailyCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalized daily calorie goal'**
+  String get featureDailyCalories;
+
+  /// No description provided for @featureTimeToGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated time to reach your goal'**
+  String get featureTimeToGoal;
+
+  /// No description provided for @featureMultipleScenarios.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple calorie scenarios'**
+  String get featureMultipleScenarios;
+
+  /// No description provided for @featureOneTimePurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time purchase, no subscriptions'**
+  String get featureOneTimePurchase;
+
+  /// No description provided for @oneTimePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time payment {price}'**
+  String oneTimePayment(Object price);
+
+  /// No description provided for @restorePurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore purchase'**
+  String get restorePurchase;
+
+  /// No description provided for @purchaseError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not process the purchase'**
+  String get purchaseError;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get historyTitle;
+
+  /// No description provided for @viewHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'View History'**
+  String get viewHistory;
+
+  /// No description provided for @clearHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear History'**
+  String get clearHistory;
+
+  /// No description provided for @noMeasurements.
+  ///
+  /// In en, this message translates to:
+  /// **'No Measurements'**
+  String get noMeasurements;
+
+  /// No description provided for @noMeasurementsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t saved any measurements yet. Calculate your BMI and save the result to track your progress.'**
+  String get noMeasurementsDesc;
+
+  /// No description provided for @addMeasurement.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Measurement'**
+  String get addMeasurement;
+
+  /// No description provided for @totalMeasurements.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {limit} measurements'**
+  String totalMeasurements(Object count, Object limit);
+
+  /// No description provided for @limitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached the limit. Upgrade to Premium to save more.'**
+  String get limitReached;
+
+  /// No description provided for @getPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Premium'**
+  String get getPremium;
+
+  /// No description provided for @saveMeasurement.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Measurement'**
+  String get saveMeasurement;
+
+  /// No description provided for @measurementSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement saved successfully'**
+  String get measurementSaved;
+
+  /// No description provided for @errorSavingMeasurement.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving measurement'**
+  String get errorSavingMeasurement;
+
+  /// No description provided for @deleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete measurement?'**
+  String get deleteConfirmTitle;
+
+  /// No description provided for @deleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get deleteConfirmMessage;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @measurementDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement deleted'**
+  String get measurementDeleted;
+
+  /// No description provided for @clearHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear history?'**
+  String get clearHistoryTitle;
+
+  /// No description provided for @clearHistoryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will delete all saved measurements. This action cannot be undone.'**
+  String get clearHistoryMessage;
+
+  /// No description provided for @clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All'**
+  String get clearAll;
+
+  /// No description provided for @historyCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'History cleared'**
+  String get historyCleared;
+
+  /// No description provided for @measurementDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement Details'**
+  String get measurementDetails;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

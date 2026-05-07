@@ -320,4 +320,107 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calPerDay => 'cal/day';
+
+  @override
+  String get unlockFullPlan => 'Unlock Complete Plan';
+
+  @override
+  String get discoverIdealWeight => 'Discover your ideal weight and personalized calorie plan';
+
+  @override
+  String get featureMinMaxWeight => 'Minimum, ideal, and maximum healthy weight';
+
+  @override
+  String get featureDailyCalories => 'Personalized daily calorie goal';
+
+  @override
+  String get featureTimeToGoal => 'Estimated time to reach your goal';
+
+  @override
+  String get featureMultipleScenarios => 'Multiple calorie scenarios';
+
+  @override
+  String get featureOneTimePurchase => 'One-time purchase, no subscriptions';
+
+  @override
+  String oneTimePayment(Object price) {
+    return 'One-time payment $price';
+  }
+
+  @override
+  String get restorePurchase => 'Restore purchase';
+
+  @override
+  String get purchaseError => 'Could not process the purchase';
+
+  @override
+  String get historyTitle => 'History';
+
+  @override
+  String get viewHistory => 'View History';
+
+  @override
+  String get clearHistory => 'Clear History';
+
+  @override
+  String get noMeasurements => 'No Measurements';
+
+  @override
+  String get noMeasurementsDesc => 'You haven\'t saved any measurements yet. Calculate your BMI and save the result to track your progress.';
+
+  @override
+  String get addMeasurement => 'Add Measurement';
+
+  @override
+  String totalMeasurements(Object count, Object limit) {
+    return '$count of $limit measurements';
+  }
+
+  @override
+  String get limitReached => 'You\'ve reached the limit. Upgrade to Premium to save more.';
+
+  @override
+  String get getPremium => 'Get Premium';
+
+  @override
+  String get saveMeasurement => 'Save Measurement';
+
+  @override
+  String get measurementSaved => 'Measurement saved successfully';
+
+  @override
+  String get errorSavingMeasurement => 'Error saving measurement';
+
+  @override
+  String get deleteConfirmTitle => 'Delete measurement?';
+
+  @override
+  String get deleteConfirmMessage => 'This action cannot be undone.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get measurementDeleted => 'Measurement deleted';
+
+  @override
+  String get clearHistoryTitle => 'Clear history?';
+
+  @override
+  String get clearHistoryMessage => 'This will delete all saved measurements. This action cannot be undone.';
+
+  @override
+  String get clearAll => 'Delete All';
+
+  @override
+  String get historyCleared => 'History cleared';
+
+  @override
+  String get measurementDetails => 'Measurement Details';
+
+  @override
+  String get close => 'Close';
 }

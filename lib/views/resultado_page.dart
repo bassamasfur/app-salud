@@ -4,6 +4,7 @@ import 'pdf_preview_page.dart';
 import 'datos_adicionales_page.dart';
 import '../l10n/app_localizations.dart';
 import '../services/purchase_service.dart';
+import '../services/storage_service.dart';
 
 /// Página que muestra los resultados del cálculo del IMC
 /// Incluye el valor, categoría, recomendaciones y opciones de acción
@@ -28,6 +29,72 @@ class _ResultadoPageState extends State<ResultadoPage> {
   void dispose() {
     _purchaseService.dispose();
     super.dispose();
+  }
+
+  /// Guarda la medición actual en el historial
+  Future<void> _guardarMedicion(
+    BuildContext context,
+    IMCController controller,
+  ) async {
+    final loc = AppLocalizations.of(context)!;
+    final isPremium = _purchaseService.hasPurchased;
+
+    if (controller.persona == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(loc.errorSavingMeasurement),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Mostrar indicador de carga
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    final exito = await StorageService.guardarMedicion(
+      controller.persona!,
+      isPremium,
+    );
+
+    if (context.mounted) {
+      Navigator.pop(context); // Cerrar el indicador de carga
+
+      if (exito) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 12),
+                Expanded(child: Text(loc.measurementSaved)),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: loc.viewHistory,
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                Navigator.pushNamed(context, '/historial');
+              },
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(loc.errorSavingMeasurement),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -196,7 +263,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
                       if (_purchaseService.hasPurchased)
                         _buildPremiumContent(loc, persona, isSmallScreen)
                       else
-                        _buildPaywall(isSmallScreen),
+                        _buildPaywall(loc, isSmallScreen),
                     ],
                   ),
                 ),
@@ -238,6 +305,37 @@ class _ResultadoPageState extends State<ResultadoPage> {
                         ),
                         label: Text(
                           loc.calculateAnotherImc,
+                          style: TextStyle(
+                            fontSize: isSmallScreen ? 15 : 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: isSmallScreen ? 8 : 12),
+
+                    // Botón guardar medición
+                    SizedBox(
+                      width: double.infinity,
+                      height: isSmallScreen ? 45 : 50,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          _guardarMedicion(context, controller);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2196F3),
+                          foregroundColor: Colors.white,
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              isSmallScreen ? 22 : 25,
+                            ),
+                          ),
+                        ),
+                        icon: Icon(Icons.save, size: isSmallScreen ? 18 : 20),
+                        label: Text(
+                          loc.saveMeasurement,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 15 : 16,
                             fontWeight: FontWeight.bold,
@@ -894,7 +992,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
   }
 
   /// Construye el paywall para usuarios sin premium
-  Widget _buildPaywall(bool isSmallScreen) {
+  Widget _buildPaywall(AppLocalizations loc, bool isSmallScreen) {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: isSmallScreen ? 20 : 24,
@@ -918,7 +1016,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
               ),
               SizedBox(height: isSmallScreen ? 8 : 16),
               Text(
-                'Desbloquea Plan Completo',
+                loc.unlockFullPlan,
                 style: TextStyle(
                   fontSize: isSmallScreen ? 18 : 20,
                   fontWeight: FontWeight.bold,
@@ -927,7 +1025,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
               ),
               SizedBox(height: isSmallScreen ? 4 : 8),
               Text(
-                'Descubre tu peso ideal y plan de calorías personalizado',
+                loc.discoverIdealWeight,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.grey[700],
@@ -935,26 +1033,11 @@ class _ResultadoPageState extends State<ResultadoPage> {
                 ),
               ),
               SizedBox(height: isSmallScreen ? 16 : 24),
-              _buildFeatureLine(
-                'Peso mínimo, ideal y máximo saludable',
-                isSmallScreen,
-              ),
-              _buildFeatureLine(
-                'Meta de calorías diarias personalizada',
-                isSmallScreen,
-              ),
-              _buildFeatureLine(
-                'Tiempo estimado para alcanzar tu meta',
-                isSmallScreen,
-              ),
-              _buildFeatureLine(
-                'Múltiples escenarios de calorías',
-                isSmallScreen,
-              ),
-              _buildFeatureLine(
-                'Compra única, sin suscripciones',
-                isSmallScreen,
-              ),
+              _buildFeatureLine(loc.featureMinMaxWeight, isSmallScreen),
+              _buildFeatureLine(loc.featureDailyCalories, isSmallScreen),
+              _buildFeatureLine(loc.featureTimeToGoal, isSmallScreen),
+              _buildFeatureLine(loc.featureMultipleScenarios, isSmallScreen),
+              _buildFeatureLine(loc.featureOneTimePurchase, isSmallScreen),
               SizedBox(height: isSmallScreen ? 16 : 24),
               SizedBox(
                 width: double.infinity,
@@ -964,9 +1047,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
                     final success = await _purchaseService.buyProduct();
                     if (!success && mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('No se pudo procesar la compra'),
-                        ),
+                        SnackBar(content: Text(loc.purchaseError)),
                       );
                     } else if (mounted) {
                       setState(() {});
@@ -982,8 +1063,10 @@ class _ResultadoPageState extends State<ResultadoPage> {
                   ),
                   child: Text(
                     _purchaseService.productDetails != null
-                        ? 'Comprar por ${_purchaseService.productDetails!.price}'
-                        : 'Comprar Premium \$1.99',
+                        ? loc.oneTimePayment(
+                            _purchaseService.productDetails!.price,
+                          )
+                        : loc.oneTimePayment('\$1.99'),
                     style: TextStyle(
                       fontSize: isSmallScreen ? 16 : 18,
                       fontWeight: FontWeight.bold,
@@ -999,7 +1082,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
                   if (mounted) setState(() {});
                 },
                 child: Text(
-                  'Restaurar compra',
+                  loc.restorePurchase,
                   style: TextStyle(fontSize: isSmallScreen ? 13 : 14),
                 ),
               ),
