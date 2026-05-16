@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../controllers/imc_controller.dart';
 import 'pdf_preview_page.dart';
 import 'datos_adicionales_page.dart';
 import '../l10n/app_localizations.dart';
 import '../services/purchase_service.dart';
 import '../services/storage_service.dart';
+import '../services/ad_service.dart';
 
 /// Página que muestra los resultados del cálculo del IMC
 /// Incluye el valor, categoría, recomendaciones y opciones de acción
@@ -18,16 +20,36 @@ class ResultadoPage extends StatefulWidget {
 
 class _ResultadoPageState extends State<ResultadoPage> {
   final PurchaseService _purchaseService = PurchaseService();
+  BannerAd? _bannerAd;
+  bool _isBannerLoaded = false;
 
   @override
   void initState() {
     super.initState();
     _purchaseService.initialize();
+    _loadBannerAd();
+  }
+
+  /// Carga el banner de AdMob
+  void _loadBannerAd() {
+    _bannerAd = AdService.createBannerAd(
+      onAdLoaded: (ad) {
+        setState(() {
+          _isBannerLoaded = true;
+        });
+      },
+      onAdFailedToLoad: (ad, error) {
+        setState(() {
+          _isBannerLoaded = false;
+        });
+      },
+    );
   }
 
   @override
   void dispose() {
     _purchaseService.dispose();
+    _bannerAd?.dispose();
     super.dispose();
   }
 
@@ -268,6 +290,20 @@ class _ResultadoPageState extends State<ResultadoPage> {
                   ),
                 ),
               ),
+
+              // Banner de AdMob antes de los botones
+              if (_isBannerLoaded && _bannerAd != null)
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: isSmallScreen ? 8.0 : 12.0,
+                  ),
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: _bannerAd!.size.width.toDouble(),
+                    height: _bannerAd!.size.height.toDouble(),
+                    child: AdWidget(ad: _bannerAd!),
+                  ),
+                ),
 
               // Botones de acción fijos en la parte inferior
               Container(

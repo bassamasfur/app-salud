@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-// ...import eliminado: google_mobile_ads...
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../l10n/app_localizations.dart';
 import '../services/storage_service.dart';
+import '../services/ad_service.dart';
 
 /// Página de bienvenida de la aplicación IMC
 /// Primera pantalla que ve el usuario con información sobre la app
@@ -21,11 +22,36 @@ class BienvenidaPage extends StatefulWidget {
 
 class _BienvenidaPageState extends State<BienvenidaPage> {
   int _numMediciones = 0;
+  BannerAd? _bannerAd;
+  bool _isBannerLoaded = false;
 
   @override
   void initState() {
     super.initState();
     _cargarNumeroMediciones();
+    _loadBannerAd();
+  }
+
+  /// Carga el banner de AdMob
+  void _loadBannerAd() {
+    _bannerAd = AdService.createBannerAd(
+      onAdLoaded: (ad) {
+        setState(() {
+          _isBannerLoaded = true;
+        });
+      },
+      onAdFailedToLoad: (ad, error) {
+        setState(() {
+          _isBannerLoaded = false;
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
   }
 
   Future<void> _cargarNumeroMediciones() async {
@@ -110,12 +136,14 @@ class _BienvenidaPageState extends State<BienvenidaPage> {
                         height: isTinyScreen ? 6 : (isSmallScreen ? 10 : 20),
                       ),
 
-                      // ...Banner de AdMob eliminado...
-                      Center(
-                        child: SizedBox(
-                          // ...Widget de AdMob eliminado...
+                      // Banner de AdMob
+                      if (_isBannerLoaded && _bannerAd != null)
+                        Container(
+                          alignment: Alignment.center,
+                          width: _bannerAd!.size.width.toDouble(),
+                          height: _bannerAd!.size.height.toDouble(),
+                          child: AdWidget(ad: _bannerAd!),
                         ),
-                      ),
 
                       SizedBox(
                         height: isTinyScreen ? 6 : (isSmallScreen ? 10 : 20),
